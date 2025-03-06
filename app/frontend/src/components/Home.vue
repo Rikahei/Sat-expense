@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h1>Hello Bitcoin</h1>
-    <p>
+    <p class="text-pink-600">
       Track your daily spending and see how much Bitcoin you've spent!
     </p>
     <p>
