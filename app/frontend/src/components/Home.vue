@@ -3,7 +3,7 @@
     class="home min-h-screen flex flex-col divide-y divide-gray-300 divide-dashed bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100"
   >
     <!-- Top Section: Bitcoin Price (Card Layout) -->
-    <div class="flex-1 flex flex-col items-center justify-center p-4">
+    <div class="flex-[3] flex flex-col items-center justify-center p-4">
       <div
         class="w-full max-w-md bg-white rounded-lg shadow-md p-6 dark:bg-gray-800"
       >
@@ -39,37 +39,54 @@
       </div>
     </div>
 
-    <!-- Middle Section: Input Field -->
-    <div class="flex-1 flex flex-col items-center justify-center p-4">
-      <h2 class="text-xl font-semibold mb-4 dark:text-gray-300">
-        Enter Spending Amount
-      </h2>
-      <input
-        type="number"
-        class="border border-gray-300 rounded-md p-2 w-64 dark:bg-gray-700 dark:text-gray-100"
-        placeholder="Enter amount in USD"
-        v-model="spendingAmount"
-      />
-      <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-        @click="addSpending"
-      >
-        Add
-      </button>
+    <!-- Middle Section: Input and Button on Same Line -->
+    <div class="flex-[2] flex items-center justify-center gap-4 p-4 mx-auto">
+        <input
+          type="number"
+          class="border border-gray-300 rounded-md p-2 w-64 dark:bg-gray-700 dark:text-gray-100"
+          placeholder="Enter spending amount"
+          v-model="spendingAmount"
+        />
+        <button
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          @click="addSpending"
+        >
+          Add
+        </button>
     </div>
 
     <!-- Bottom Section: Spending History -->
-    <div class="flex-1 flex flex-col items-center justify-center p-4">
-      <h2 class="text-xl font-semibold mb-4 dark:text-gray-300">
-        Spending History
-      </h2>
-      <ul v-if="spendingHistory.length > 0" class="w-full max-w-md">
+    <div class="flex-[4] flex flex-col p-4">
+      <div class="flex justify-between items-center w-full">
+        <h2 class="text-xl font-semibold mb-4 dark:text-gray-300">
+          Spending History
+        </h2>
+        <p class="dark:text-gray-300">
+            Total: ${{ totalSpending }}
+            <span class="flex items-center text-xl" v-if="price">
+                 <Icon
+                    icon="bitcoin-icons:bitcoin-circle-filled"
+                    class="w-4 h-4 mr-1 text-yellow-500"
+                  />
+                {{ convertUsdToBtc(totalSpending) }}
+            </span>
+            <span v-else>Loading Total</span>
+        </p>
+      </div>
+      <ul v-if="spendingHistory.length > 0" class="w-full max-w-md mx-auto">
         <li
           v-for="(item, index) in spendingHistory"
           :key="index"
           class="flex justify-between items-center py-2"
         >
           <span>${{ item.amount }}</span>
+          <span class="flex items-center">
+            <Icon
+              icon="bitcoin-icons:bitcoin-circle-outline"
+              class="w-4 h-4 mr-1 text-yellow-500"
+            />
+            {{ convertUsdToBtc(item.amount) }}
+          </span>
           <span>{{ item.timestamp }}</span>
         </li>
       </ul>
@@ -97,6 +114,11 @@ export default {
       spendingAmount: "",
       spendingHistory: [],
     };
+  },
+  computed: {
+    totalSpending() {
+      return this.spendingHistory.reduce((sum, item) => sum + item.amount, 0).toFixed(2);
+    },
   },
   mounted() {
     this.fetchPrice(); // Initial fetch
@@ -158,13 +180,20 @@ export default {
       }
     },
     addSpending() {
-      if (this.spendingAmount) {
+      //Check if spendingAmount is number and not empty
+      if (this.spendingAmount && !isNaN(Number(this.spendingAmount))) {
+        const amount = Number(this.spendingAmount);
         this.spendingHistory.push({
-          amount: this.spendingAmount,
+          amount: amount,
           timestamp: new Date().toLocaleString(),
         });
         this.spendingAmount = "";
       }
+    },
+    convertUsdToBtc(usdAmount) {
+        if (!this.price || isNaN(Number(usdAmount))) return "Invalid";
+        const btcAmount = Number(usdAmount) / Number(this.price);
+        return btcAmount.toFixed(8);
     },
   },
 };
