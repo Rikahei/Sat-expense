@@ -1,106 +1,108 @@
 <template>
-  <div
-    class="home min-h-screen flex flex-col divide-y divide-gray-300 divide-dashed bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100"
-  >
-    <!-- Top Section: Bitcoin Price (Card Layout) -->
-    <div class="flex-[3] flex flex-col items-center justify-center p-4">
-      <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
-        <div class="flex items-center">
-          <div class="w-3/10">
-            <Icon
-              icon="bitcoin-icons:bitcoin-circle-filled"
-              class="w-20 h-20 mx-auto text-yellow-500"
-            />
-          </div>
-          <div class="w-7/10 text-right">
-            <div v-if="price" class="price-section">
-              <h2 class="text-xl font-semibold mb-2 dark:text-gray-300">
-                Bitcoin Price (USD):
-              </h2>
-              <p
-                class="price"
-                :class="{ up: priceChange === 'up', down: priceChange === 'down' }"
-              >
-                <span v-if="priceChange === 'up'" class="arrow">↑</span>
-                <span v-else-if="priceChange === 'down'" class="arrow">↓</span>
-                ${{ price }}
-              </p>
+  <div class="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+    <div class="divide-y divide-gray-300 divide-double">
+      <!-- Top Section: Bitcoin Price (Card Layout) -->
+      <div class="flex-[3] flex flex-col items-center justify-center p-8">
+        <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
+          <div class="flex items-center">
+            <div class="w-3/10">
+              <Icon
+                icon="bitcoin-icons:bitcoin-circle-filled"
+                class="w-20 h-20 mx-auto text-yellow-500"
+              />
             </div>
-            <div v-else-if="error" class="error-section">
-              <p>Error fetching Bitcoin price: {{ error }}</p>
-            </div>
-            <div v-else class="loading-section">
-              <p>Loading Bitcoin price...</p>
+            <div class="w-7/10 text-right">
+              <div v-if="price" class="price-section">
+                <h2 class="text-xl font-semibold mb-2 dark:text-gray-300">
+                  Bitcoin Price (USD):
+                </h2>
+                <p
+                  class="price"
+                  :class="{ up: priceChange === 'up', down: priceChange === 'down' }"
+                >
+                  <span v-if="priceChange === 'up'" class="arrow">↑</span>
+                  <span v-else-if="priceChange === 'down'" class="arrow">↓</span>
+                  ${{ price }}
+                </p>
+              </div>
+              <div v-else-if="error" class="error-section">
+                <p>Error fetching Bitcoin price: {{ error }}</p>
+              </div>
+              <div v-else class="loading-section">
+                <p>Loading Bitcoin price...</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Middle Section: Input and Button on Same Line -->
-    <div class="flex-[2] flex items-center justify-center gap-4 p-4 mx-auto">
-      <input
-        type="number"
-        class="border border-gray-300 rounded-md p-2 w-64 dark:bg-gray-700 dark:text-gray-100"
-        placeholder="Enter spending amount"
-        v-model="spendingAmount"
-      />
-      <button
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        @click="addSpending"
-      >
-        Add
-      </button>
-    </div>
+      <!-- Middle Section: Input and Button on Same Line -->
+      <div class="flex-[2] flex items-center justify-center gap-4 p-8 mx-auto">
+        <div class="flex items-center">
+          <input
+            type="number"
+            class="border border-gray-300 rounded-md p-2 w-64 dark:bg-gray-700 dark:text-gray-100"
+            placeholder="Enter spending amount"
+            v-model="spendingAmount"
+          />
+          <button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
+            @click="addSpending"
+          >
+            Add
+          </button>
+        </div>
+      </div>
 
-    <!-- Bottom Section: Spending History -->
-    <div class="flex-[4] flex flex-col p-4">
-      <div class="flex justify-between items-center w-full">
-        <h2 class="text-xl font-semibold mb-4 dark:text-gray-300">
-          Spending History
-        </h2>
-        <p class="dark:text-gray-300">
-          Total: ${{ totalSpending }}
-          <span class="flex items-center text-xl" v-if="price">
-            <Icon
-              icon="bitcoin-icons:bitcoin-circle-filled"
-              class="w-4 h-4 mr-1 text-yellow-500"
-            />
-            {{ totalBtcSpending }}
-          </span>
-          <span v-else>Loading Total</span>
-        </p>
+      <!-- Bottom Section: Spending History -->
+      <div class="flex-[4] flex flex-col p-4">
+        <div class="flex justify-between items-center w-full">
+          <h2 class="text-xl font-semibold mb-4 dark:text-gray-300">
+            Spending History
+          </h2>
+          <p class="dark:text-gray-300">
+            Total: ${{ totalSpending }}
+            <span class="flex items-center text-xl" v-if="price">
+              <Icon
+                icon="bitcoin-icons:bitcoin-circle-filled"
+                class="w-4 h-4 mr-1 text-yellow-500"
+              />
+              {{ totalBtcSpending }}
+            </span>
+            <span v-else>Loading Total</span>
+          </p>
+        </div>
+        <div v-if="spendingHistory.length > 0" class="w-full max-w-md mx-auto">
+          <table class="w-full text-left dark:text-gray-300">
+            <thead class="border-b border-transparent">
+              <tr>
+                <th class="py-2">Amount</th>
+                <th class="py-2">BTC Amount</th>
+                <th class="py-2">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(item, index) in spendingHistory"
+                :key="index"
+                class="border-b border-transparent"
+              >
+                <td class="py-2">${{ item.amount }} {{ item.currency_type }}</td>
+                <td class="py-2 flex items-center">
+                  <Icon
+                    v-if="item.crypto_type === 'btc'"
+                    icon="bitcoin-icons:bitcoin-circle-outline"
+                    class="w-4 h-4 mr-1 text-yellow-500"
+                  />
+                  {{ item.crypto_amount }}
+                </td>
+                <td class="py-2">{{ formatTimestamp(item.timestamp) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p v-else class="dark:text-gray-300">No spending history yet.</p>
       </div>
-      <div v-if="spendingHistory.length > 0" class="w-full max-w-md mx-auto">
-        <table class="w-full text-left dark:text-gray-300">
-          <thead class="border-b border-transparent">
-            <tr>
-              <th class="py-2">Amount</th>
-              <th class="py-2">BTC Amount</th>
-              <th class="py-2">Timestamp</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(item, index) in spendingHistory"
-              :key="index"
-              class="border-b border-transparent"
-            >
-              <td class="py-2">${{ item.amount }} {{ item.currency_type }}</td>
-              <td class="py-2 flex items-center">
-                <Icon
-                  v-if="item.crypto_type === 'btc'"
-                  icon="bitcoin-icons:bitcoin-circle-outline"
-                  class="w-4 h-4 mr-1 text-yellow-500"
-                />
-                {{ item.crypto_amount }}
-              </td>
-              <td class="py-2">{{ formatTimestamp(item.timestamp) }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p v-else class="dark:text-gray-300">No spending history yet.</p>
     </div>
   </div>
 </template>
@@ -185,7 +187,7 @@ export default {
     async addSpending() {
       if (this.spendingAmount && !isNaN(Number(this.spendingAmount)) && Number(this.spendingAmount) > 0) {
         const amount = Number(this.spendingAmount);
-        const currentTimestamp = new Date(); 
+        const currentTimestamp = new Date();
         const cryptoAmount = Number(amount / this.price).toFixed(8);
         const entry = {
           currency_type: 'usd',
@@ -193,7 +195,7 @@ export default {
           crypto_type: 'btc',
           crypto_amount: cryptoAmount,
           crypto_price: this.price,
-          timestamp: currentTimestamp, 
+          timestamp: currentTimestamp,
         };
         await addSpendingEntry(entry);
         this.spendingHistory.push(entry);
