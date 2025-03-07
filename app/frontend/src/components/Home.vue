@@ -105,6 +105,7 @@
       </div>
     </div>
   </div>
+  <NavBottom/>
 </template>
 
 <script>
@@ -112,11 +113,13 @@ import { DateTime } from 'luxon';
 import axios from 'axios';
 import { Icon } from '@iconify/vue';
 import { addSpendingEntry, getAllSpendingEntries } from '../utils/db';
+import NavBottom from './NavBottom.vue';
 
 export default {
   name: 'Home',
   components: {
     Icon,
+    NavBottom
   },
   data() {
     return {
