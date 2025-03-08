@@ -177,7 +177,7 @@ export default {
     async addSpending() {
       if (this.spendingAmount && !isNaN(Number(this.spendingAmount)) && Number(this.spendingAmount) > 0) {
         const amount = Number(this.spendingAmount);
-        const currentTimestamp = new Date();
+        const currentTimestamp = DateTime.now().toISO();
         const cryptoAmount = Number(amount / this.price).toFixed(8);
         const entry = {
           currency_type: 'usd',
@@ -195,7 +195,7 @@ export default {
       }
     },
     formatTimestamp(timestamp) {
-      const dt = DateTime.fromJSDate(timestamp);
+      const dt = DateTime.fromISO(timestamp);
       return dt.toFormat('yy/MM/dd, HH:mm');
     },
     async loadSpendingHistory() {

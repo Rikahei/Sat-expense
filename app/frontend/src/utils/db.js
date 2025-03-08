@@ -49,5 +49,12 @@ async function getSpendingByMonth(month, year) {
     return filteredEntries;
 }
 
+async function clearDatabase() {
+  const db = await initDatabase();
+  const tx = db.transaction(SPENDING_STORE, 'readwrite');
+  const store = tx.objectStore(SPENDING_STORE);
+  await store.clear();
+  await tx.done;
+}
 
-export { addSpendingEntry, getAllSpendingEntries, getSpendingByMonth };
+export { addSpendingEntry, getAllSpendingEntries, getSpendingByMonth, clearDatabase };

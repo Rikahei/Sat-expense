@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
-        <h1>Monthly Spending</h1>
+        <h1 class="text-2xl font-bold mb-4">Monthly Spending</h1>
         <FullCalendar ref="fullCalendar" :options="calendarOptions" />
     </div>
 </template>
@@ -10,6 +10,7 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { getSpendingByMonth } from '../utils/db';
+import { DateTime } from 'luxon';
 
 export default {
   name: 'MonthlySpend',
@@ -35,9 +36,6 @@ export default {
   async mounted() {
     await this.fetchSpendingData();
     this.calendarOptions.events = this.formatEventsForCalendar(this.spendingData);
-
-    let calendarApi = this.$refs.fullCalendar.getApi()
-    console.log(calendarApi.getDate());
   },
   watch:{
     calendarDate: {
@@ -71,9 +69,9 @@ export default {
     },
     async fetchSpendingData() {
       try {
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth() + 1;
+        const today = DateTime.now(); // Use Luxon's DateTime.now()
+        const currentYear = today.year;
+        const currentMonth = today.month;
 
         const data = await getSpendingByMonth(currentMonth, currentYear);
         this.spendingData = data;
@@ -85,7 +83,7 @@ export default {
       // Group spending entries by day
       const dailySpending = {};
       spendingData.forEach(entry => {
-        const dateString = entry.timestamp.toISOString().slice(0, 10); // Get YYYY-MM-DD
+        const dateString = DateTime.fromISO(entry.timestamp).toISODate(); // Get YYYY-MM-DD
         if (!dailySpending[dateString]) {
           dailySpending[dateString] = [];
         }
