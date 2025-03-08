@@ -1,33 +1,41 @@
 <template>
-  <div>
-    <AddSpending />
-    <NavBottom />
+  <div :class="{ dark: isDarkMode }">
+    <component :is="currentComponent" />
+    <NavBottom @update-component="updateComponent" />
   </div>
 </template>
 
 <script>
-import { mount } from '@vue/test-utils';
 import AddSpending from './AddSpending.vue';
 import MonthlySpend from './MonthlySpend.vue';
+import Setting from './Setting.vue';
 import NavBottom from './NavBottom.vue';
 
 export default {
   components: {
     AddSpending,
     MonthlySpend,
+    Setting,
     NavBottom,
   },
-  mounted () {
+  data() {
+    return {
+      isDarkMode: false,
+      currentComponent: 'AddSpending',
+    };
+  },
+  mounted() {
     this.applyDarkMode();
   },
   methods: {
     applyDarkMode() {
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
+        this.isDarkMode = true;
       }
     },
+    updateComponent(component) {
+      this.currentComponent = component;
+    }
   }
 };
 </script>

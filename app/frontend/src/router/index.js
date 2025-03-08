@@ -4,7 +4,6 @@ import MonthlySpend from './components/MonthlySpend.vue'; // Import MonthlySpend
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/monthly-spend', component: MonthlySpend, meta: { title: 'Monthly Spend - Sat-Spend' } }, // Add the route
 ];
 
 const router = createRouter({
