@@ -31,4 +31,23 @@ async function getAllSpendingEntries() {
     return db.getAll(SPENDING_STORE);
 }
 
-export { addSpendingEntry, getAllSpendingEntries };
+async function getSpendingByMonth(month, year) {
+    const db = await initDatabase();
+    const tx = db.transaction(SPENDING_STORE, 'readonly');
+    const store = tx.objectStore(SPENDING_STORE);
+    // Assuming your spending entries have a 'date' property in YYYY-MM-DD format
+    const spendingEntries = await store.getAll();
+
+    const filteredEntries = spendingEntries.filter(entry => {
+        const entryDate = new Date(entry.timestamp); // Assuming you store date as a string
+        const entryMonth = entryDate.getMonth() + 1; // Month is 0-indexed
+        const entryYear = entryDate.getFullYear();
+        return entryMonth === month && entryYear === year;
+    });
+
+    await tx.done;
+    return filteredEntries;
+}
+
+
+export { addSpendingEntry, getAllSpendingEntries, getSpendingByMonth };
