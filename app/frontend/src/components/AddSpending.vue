@@ -1,8 +1,9 @@
 <template>
   <div class="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
-    <div class="divide-y divide-gray-300 divide-double">
+    <div class="divide-y divide-gray-300 divide-double flex flex-col h-screen">
       <!-- Top Section: Bitcoin Price (Card Layout) -->
-      <div class="flex-[3] flex flex-col items-center justify-center p-8">
+      <div class="flex-[2] flex flex-col items-center justify-center p-8">
+        <!-- Changed flex-[3] to flex-[2] -->
         <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
           <div class="flex items-center">
             <div class="w-3/10">
@@ -37,7 +38,7 @@
       </div>
 
       <!-- Middle Section: Input and Button on Same Line -->
-      <div class="flex-[2] flex items-center justify-center gap-4 p-8 mx-auto">
+      <div class="flex-[1] flex items-center justify-center gap-4 p-4">
         <div class="flex items-center">
           <input
             type="number"
@@ -55,7 +56,7 @@
       </div>
 
       <!-- Bottom Section: Spending History -->
-      <div class="flex-[4] flex flex-col p-4">
+      <div class="flex-[6] flex flex-col p-4">
         <div class="flex justify-between items-center w-full">
           <h2 class="text-xl font-semibold mb-4 dark:text-gray-300">
             Spending History
@@ -72,9 +73,9 @@
             <span v-else>Loading Total</span>
           </p>
         </div>
-        <div v-if="spendingHistory.length > 0" class="w-full max-w-md mx-auto">
+        <div v-if="spendingHistory.length > 0" class="w-full max-w-md mx-auto overflow-auto custom-scrollbar">
           <table class="w-full text-left dark:text-gray-300">
-            <thead class="border-b border-transparent">
+            <thead class="border-b border-transparent sticky top-0 bg-white dark:bg-gray-900">
               <tr>
                 <th class="py-2">Amount</th>
                 <th class="py-2">BTC Amount</th>
@@ -83,8 +84,8 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in spendingHistory"
-                :key="index"
+                v-for="(item, index) in reversedSpendingHistory"
+                :key="item.key"
                 class="border-b border-transparent"
               >
                 <td class="py-2">${{ item.amount }} {{ item.currency_type }}</td>
@@ -135,6 +136,9 @@ export default {
     },
     totalBtcSpending() {
       return this.spendingHistory.reduce((sum, item) => sum + parseFloat(item.crypto_amount), 0).toFixed(8);
+    },
+    reversedSpendingHistory() {
+      return [...this.spendingHistory].reverse();
     },
   },
   async mounted() {
@@ -187,8 +191,13 @@ export default {
           crypto_price: this.price,
           timestamp: currentTimestamp,
         };
-        await addSpendingEntry(entry);
-        this.spendingHistory.push(entry);
+        try {
+          const key = await addSpendingEntry(entry); // Add key field
+          entry.key = key;
+          this.spendingHistory.push(entry);
+        } catch (error) {
+          console.error('Error adding spending entry:', error);
+        }
         this.spendingAmount = '';
       } else {
         alert('Please enter a valid amount greater than zero.');
@@ -201,7 +210,12 @@ export default {
     async loadSpendingHistory() {
       try {
         const entries = await getAllSpendingEntries();
-        this.spendingHistory = entries;
+        // add key to each entry
+        const entriesWithKey = entries.map((entry) => ({
+          ...entry,
+          key: entry.key,
+        }));
+        this.spendingHistory = entriesWithKey;
       } catch (error) {
         console.error('Error loading spending history:', error);
       }
@@ -249,5 +263,26 @@ export default {
 .loading-section {
   color: blue;
   margin-top: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Width of the entire scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color of the tracking area */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color of the thumb */
+  border-radius: 4px; /* Roundness of the thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color of the thumb on hover */
+}
+
+.custom-scrollbar {
+  max-height: 22rem; /* Adjust as needed */
 }
 </style>
