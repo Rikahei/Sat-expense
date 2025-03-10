@@ -17,11 +17,11 @@
     "@iconify-json/bitcoin-icons": "^1.2.2",
     "@iconify/vue": "^4.3.0",
     "axios": "^1.8.1",
-    "flowbite": "^3.1.2",
     "flowbite-vue": "^0.1.9",
     "idb": "^8.0.2",
     "luxon": "^3.5.0",
     "vue": "^3.5.13",
+    "vue-i18n": "^10.0.6",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
