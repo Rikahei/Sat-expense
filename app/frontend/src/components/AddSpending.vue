@@ -3,7 +3,6 @@
     <div class="divide-y divide-gray-300 divide-double flex flex-col h-screen">
       <!-- Top Section: Bitcoin Price (Card Layout) -->
       <div class="flex-[2] flex flex-col items-center justify-center p-8">
-        <!-- Changed flex-[3] to flex-[2] -->
         <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
           <div class="flex items-center">
             <div class="w-3/10">
@@ -43,7 +42,7 @@
           <input
             type="number"
             class="border border-gray-300 rounded-md p-2 w-64 dark:bg-gray-700 dark:text-gray-100"
-            placeholder="Enter spending amount"
+            placeholder="Enter expense amount"
             v-model="spendingAmount"
           />
           <button
@@ -55,14 +54,18 @@
         </div>
       </div>
 
-      <!-- Bottom Section: Spending History -->
+      <!-- Bottom Section: expense History -->
       <div class="flex-[6] flex flex-col p-4">
-        <div class="flex justify-between items-center w-full">
-          <h2 class="text-xl font-semibold mb-4 dark:text-gray-300">
-            Spending History
-          </h2>
+        <div class="flex justify-between items-center w-full mb-4">
+          <div class="relative">
+            <select v-model="selectedMonth" class="border border-gray-300 rounded-md p-2 w-48 dark:bg-gray-700 dark:text-gray-100">
+              <option v-for="month in months" :key="month.value" :value="month.value">
+                {{ $t( `months.${month.label}` ) }}
+              </option>
+            </select>
+          </div>
           <p class="dark:text-gray-300">
-            Total: ${{ totalSpending }}
+            Total: ${{ totalExpense }}
             <span class="flex items-center text-xl" v-if="price">
               <Icon
                 icon="bitcoin-icons:bitcoin-circle-filled"
@@ -73,9 +76,9 @@
             <span v-else>Loading Total</span>
           </p>
         </div>
-        <div v-if="spendingHistory.length > 0" class="w-full max-w-md mx-auto overflow-auto custom-scrollbar">
+        <div v-if="filteredSpendingHistory.length > 0" class="w-full max-w-md mx-auto overflow-auto custom-scrollbar">
           <table class="w-full text-left dark:text-gray-300">
-            <thead class="border-b border-transparent sticky top-0 bg-white dark:bg-gray-900">
+            <thead>
               <tr>
                 <th class="py-2">Amount</th>
                 <th class="py-2">BTC Amount</th>
@@ -84,8 +87,8 @@
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in reversedSpendingHistory"
-                :key="item.key"
+                v-for="(item, index) in reversedFilteredSpendingHistory"
+                :key="item.id"
                 class="border-b border-transparent"
               >
                 <td class="py-2">${{ item.amount }} {{ item.currency_type }}</td>
@@ -102,7 +105,7 @@
             </tbody>
           </table>
         </div>
-        <p v-else class="dark:text-gray-300">No spending history yet.</p>
+        <p v-else class="dark:text-gray-300">No expense history for selected month.</p>
       </div>
     </div>
   </div>
@@ -128,23 +131,39 @@ export default {
       intervalId: null,
       spendingAmount: '',
       spendingHistory: [],
+      selectedMonth: null, // Added: Selected month
+      months: [], // Added: Array of months
     };
   },
   computed: {
-    totalSpending() {
-      return this.spendingHistory.reduce((sum, item) => sum + item.amount, 0).toFixed(2);
+    totalExpense() {
+      return this.filteredSpendingHistory.reduce((sum, item) => sum + item.amount, 0).toFixed(2);
     },
     totalBtcSpending() {
-      return this.spendingHistory.reduce((sum, item) => sum + parseFloat(item.crypto_amount), 0).toFixed(8);
+      return this.filteredSpendingHistory.reduce((sum, item) => sum + parseFloat(item.crypto_amount), 0).toFixed(8);
     },
-    reversedSpendingHistory() {
-      return [...this.spendingHistory].reverse();
+    reversedFilteredSpendingHistory() {
+      return [...this.filteredSpendingHistory].reverse();
+    },
+    filteredSpendingHistory() {
+      if (!this.selectedMonth) return this.spendingHistory; // Show all if no month selected
+
+      const selectedDateTime = DateTime.fromMillis(parseInt(this.selectedMonth));
+      const startOfMonth = selectedDateTime.startOf('month');
+      const endOfMonth = selectedDateTime.endOf('month');
+
+      return this.spendingHistory.filter(item => {
+        const itemDateTime = DateTime.fromMillis(parseInt(item.id));
+        return itemDateTime >= startOfMonth && itemDateTime <= endOfMonth;
+      });
     },
   },
   async mounted() {
     this.fetchPrice();
     this.intervalId = setInterval(this.fetchPrice, 30000);
     await this.loadSpendingHistory();
+    this.generateMonths(); // Generate months after loading history
+    this.selectedMonth = this.months[(DateTime.now().month - 1)].value; // Set the first month as the default
   },
   unmounted() {
     clearInterval(this.intervalId);
@@ -181,22 +200,27 @@ export default {
     async addSpending() {
       if (this.spendingAmount && !isNaN(Number(this.spendingAmount)) && Number(this.spendingAmount) > 0) {
         const amount = Number(this.spendingAmount);
-        const currentTimestamp = DateTime.now().toISO();
+        const currentTimestamp = DateTime.now(); // Get DateTime object
+        const timestampMillis = currentTimestamp.toMillis(); // Convert to milliseconds (integer)
         const cryptoAmount = Number(amount / this.price).toFixed(8);
         const entry = {
+          id: timestampMillis, // Use timestampMillis as the ID
+          spending_category: '',
+          title: '',
           currency_type: 'usd',
           amount: amount,
           crypto_type: 'btc',
           crypto_amount: cryptoAmount,
           crypto_price: this.price,
-          timestamp: currentTimestamp,
+          timestamp: currentTimestamp.toISO(), // Keep ISO string for display
         };
         try {
-          const key = await addSpendingEntry(entry); // Add key field
-          entry.key = key;
-          this.spendingHistory.push(entry);
+          await addSpendingEntry(entry);
+          this.spendingHistory.push(entry); // Add the entry to the history *after* successful DB insertion
+          await this.loadSpendingHistory();
         } catch (error) {
           console.error('Error adding spending entry:', error);
+          // Consider adding user-friendly error handling here (e.g., alert)
         }
         this.spendingAmount = '';
       } else {
@@ -209,15 +233,20 @@ export default {
     },
     async loadSpendingHistory() {
       try {
-        const entries = await getAllSpendingEntries();
-        // add key to each entry
-        const entriesWithKey = entries.map((entry) => ({
-          ...entry,
-          key: entry.key,
-        }));
-        this.spendingHistory = entriesWithKey;
+        this.spendingHistory = await getAllSpendingEntries();
       } catch (error) {
-        console.error('Error loading spending history:', error);
+        console.error('Error loading expense history:', error);
+      }
+    },
+    generateMonths() {
+      const now = DateTime.now();
+      const currentYear = now.year;
+      for (let i = 0; i < 12; i++) {
+        const dt = DateTime.fromObject({ year: currentYear, month: i + 1 });
+        this.months.push({
+          value: dt.toMillis(),
+          label: dt.month,
+        });
       }
     },
   },

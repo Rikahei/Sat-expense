@@ -1,13 +1,26 @@
 {
-    "home": "ホーム",
-    "calendar": "カレンダー",
-    "settings": "設定",
-    "monthly_spending": "月間支出",
-    "date_click": "日付をクリック",
-    "exportData": "データをエクスポート",
-    "importData": "データをインポート",
-    "language": "言語",
-    "english": "English",
-    "japanese": "日本語"
+  "home": "ホーム",
+  "calendar": "カレンダー",
+  "settings": "設定",
+  "monthly_spending": "毎月の支出",
+  "date_click": "日付をクリック",
+  "exportData": "データをエクスポート",
+  "importData": "データをインポート",
+  "language": "言語",
+  "english": "英語",
+  "japanese": "日本語",
+  "months": {
+    "1": "一月",
+    "2": "二月",
+    "3": "三月",
+    "4": "四月",
+    "5": "五月",
+    "6": "六月",
+    "7": "七月",
+    "8": "八月",
+    "9": "九月",
+    "10": "十月",
+    "11": "十一月",
+    "12": "十二月"
+  }
 }
-  
