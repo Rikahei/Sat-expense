@@ -73,7 +73,7 @@ export default {
         const currentYear = today.year;
         const currentMonth = today.month;
 
-        const data = await getSpendingByMonth(currentMonth, currentYear);
+        const data = await getSpendingByMonth(currentYear, currentMonth);
         this.spendingData = data;
       } catch (error) {
         console.error('Error fetching spending data:', error);

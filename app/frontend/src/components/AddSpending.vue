@@ -14,7 +14,7 @@
             <div class="w-7/10 text-right">
               <div v-if="price" class="price-section">
                 <h2 class="text-xl font-semibold mb-2 dark:text-gray-300">
-                  Bitcoin Price (USD):
+                  {{ $t('bitcoinPriceLabel') }}
                 </h2>
                 <p
                   class="price"
@@ -26,10 +26,9 @@
                 </p>
               </div>
               <div v-else-if="error" class="error-section">
-                <p>Error fetching Bitcoin price: {{ error }}</p>
-              </div>
+                <p>{{ $t('errorFetchingPrice', { error: error }) }}</p> </div>
               <div v-else class="loading-section">
-                <p>Loading Bitcoin price...</p>
+                <p>{{ $t('loadingBitcoinPrice') }}</p>
               </div>
             </div>
           </div>
@@ -42,14 +41,14 @@
           <input
             type="number"
             class="border border-gray-300 rounded-md p-2 w-64 dark:bg-gray-700 dark:text-gray-100"
-            placeholder="Enter expense amount"
+            :placeholder="$t('expenseAmountPlaceholder')"
             v-model="spendingAmount"
           />
           <button
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2"
             @click="addSpending"
           >
-            Add
+            {{ $t('addSpendingButton') }}
           </button>
         </div>
       </div>
@@ -60,12 +59,12 @@
           <div class="relative">
             <select v-model="selectedMonth" class="border border-gray-300 rounded-md p-2 w-48 dark:bg-gray-700 dark:text-gray-100">
               <option v-for="month in months" :key="month.value" :value="month.value">
-                {{ $t( `months.${month.label}` ) }}
+                {{ $t(`months.${month.label}`) }}
               </option>
             </select>
           </div>
           <p class="dark:text-gray-300">
-            Total: ${{ totalExpense }}
+            {{ $t('totalExpenseLabel') }}: ${{ totalExpense }}
             <span class="flex items-center text-xl" v-if="price">
               <Icon
                 icon="bitcoin-icons:bitcoin-circle-filled"
@@ -73,21 +72,21 @@
               />
               {{ totalBtcSpending }}
             </span>
-            <span v-else>Loading Total</span>
+            <span v-else>{{ $t('loadingTotal') }}</span>
           </p>
         </div>
-        <div v-if="filteredSpendingHistory.length > 0" class="w-full max-w-md mx-auto overflow-auto custom-scrollbar">
+        <div v-if="reversedSpendingHistory.length > 0" class="w-full max-w-md mx-auto overflow-auto custom-scrollbar">
           <table class="w-full text-left dark:text-gray-300">
             <thead>
               <tr>
-                <th class="py-2">Amount</th>
-                <th class="py-2">BTC Amount</th>
-                <th class="py-2">Timestamp</th>
+                <th class="py-2">{{ $t('amountColumn') }}</th>
+                <th class="py-2">{{ $t('btcAmountColumn') }}</th>
+                <th class="py-2">{{ $t('timestampColumn') }}</th>
               </tr>
             </thead>
             <tbody>
               <tr
-                v-for="(item, index) in reversedFilteredSpendingHistory"
+                v-for="(item, index) in reversedSpendingHistory"
                 :key="item.id"
                 class="border-b border-transparent"
               >
@@ -105,7 +104,7 @@
             </tbody>
           </table>
         </div>
-        <p v-else class="dark:text-gray-300">No expense history for selected month.</p>
+        <p v-else class="dark:text-gray-300">{{ $t('noExpenseHistory') }}</p>
       </div>
     </div>
   </div>
@@ -115,12 +114,17 @@
 import { DateTime } from 'luxon';
 import axios from 'axios';
 import { Icon } from '@iconify/vue';
-import { addSpendingEntry, getAllSpendingEntries } from '../utils/db';
+import { addSpendingEntry, getSpendingByMonth } from '../utils/db';
+import { useI18n } from 'vue-i18n';
 
 export default {
   name: 'AddSpending',
   components: {
     Icon,
+  },
+  setup() {
+    const { t } = useI18n();
+    return { t };
   },
   data() {
     return {
@@ -131,39 +135,32 @@ export default {
       intervalId: null,
       spendingAmount: '',
       spendingHistory: [],
-      selectedMonth: null, // Added: Selected month
-      months: [], // Added: Array of months
+      selectedMonth: null,
+      months: [],
     };
+  },
+  watch: {
+    selectedMonth(newVal, oldVal) {
+      this.loadSpendingHistory(DateTime.now().year, newVal);
+    }
   },
   computed: {
     totalExpense() {
-      return this.filteredSpendingHistory.reduce((sum, item) => sum + item.amount, 0).toFixed(2);
+      return this.spendingHistory.reduce((sum, item) => sum + item.amount, 0).toFixed(2);
     },
     totalBtcSpending() {
-      return this.filteredSpendingHistory.reduce((sum, item) => sum + parseFloat(item.crypto_amount), 0).toFixed(8);
+      return this.spendingHistory.reduce((sum, item) => sum + parseFloat(item.crypto_amount), 0).toFixed(8);
     },
-    reversedFilteredSpendingHistory() {
-      return [...this.filteredSpendingHistory].reverse();
-    },
-    filteredSpendingHistory() {
-      if (!this.selectedMonth) return this.spendingHistory; // Show all if no month selected
-
-      const selectedDateTime = DateTime.fromMillis(parseInt(this.selectedMonth));
-      const startOfMonth = selectedDateTime.startOf('month');
-      const endOfMonth = selectedDateTime.endOf('month');
-
-      return this.spendingHistory.filter(item => {
-        const itemDateTime = DateTime.fromMillis(parseInt(item.id));
-        return itemDateTime >= startOfMonth && itemDateTime <= endOfMonth;
-      });
-    },
+    reversedSpendingHistory() {
+      return [...this.spendingHistory].reverse();
+    }
   },
   async mounted() {
     this.fetchPrice();
     this.intervalId = setInterval(this.fetchPrice, 30000);
-    await this.loadSpendingHistory();
-    this.generateMonths(); // Generate months after loading history
-    this.selectedMonth = this.months[(DateTime.now().month - 1)].value; // Set the first month as the default
+    this.generateMonths();
+    this.selectedMonth = this.months[(DateTime.now().month - 1)].value;
+    this.loadSpendingHistory(DateTime.now().year, DateTime.now().month);
   },
   unmounted() {
     clearInterval(this.intervalId);
@@ -200,11 +197,11 @@ export default {
     async addSpending() {
       if (this.spendingAmount && !isNaN(Number(this.spendingAmount)) && Number(this.spendingAmount) > 0) {
         const amount = Number(this.spendingAmount);
-        const currentTimestamp = DateTime.now(); // Get DateTime object
-        const timestampMillis = currentTimestamp.toMillis(); // Convert to milliseconds (integer)
+        const currentTimestamp = DateTime.now();
+        const timestampMillis = currentTimestamp.toMillis();
         const cryptoAmount = Number(amount / this.price).toFixed(8);
         const entry = {
-          id: timestampMillis, // Use timestampMillis as the ID
+          id: timestampMillis,
           spending_category: '',
           title: '',
           currency_type: 'usd',
@@ -212,30 +209,31 @@ export default {
           crypto_type: 'btc',
           crypto_amount: cryptoAmount,
           crypto_price: this.price,
-          timestamp: currentTimestamp.toISO(), // Keep ISO string for display
+          timestamp: currentTimestamp.toISO(),
         };
         try {
           await addSpendingEntry(entry);
-          this.spendingHistory.push(entry); // Add the entry to the history *after* successful DB insertion
+          this.spendingHistory.push(entry);
           await this.loadSpendingHistory();
         } catch (error) {
           console.error('Error adding spending entry:', error);
-          // Consider adding user-friendly error handling here (e.g., alert)
+          alert(this.$t('errorAddingEntry')); //Improved error handling
         }
         this.spendingAmount = '';
       } else {
-        alert('Please enter a valid amount greater than zero.');
+        alert(this.$t('invalidAmount'));
       }
     },
     formatTimestamp(timestamp) {
       const dt = DateTime.fromISO(timestamp);
       return dt.toFormat('yy/MM/dd, HH:mm');
     },
-    async loadSpendingHistory() {
+    async loadSpendingHistory(year, month) {
       try {
-        this.spendingHistory = await getAllSpendingEntries();
+        this.spendingHistory = await getSpendingByMonth(year, month);
       } catch (error) {
         console.error('Error loading expense history:', error);
+        alert(this.$t('errorLoadingHistory')); //Improved error handling
       }
     },
     generateMonths() {
@@ -244,7 +242,7 @@ export default {
       for (let i = 0; i < 12; i++) {
         const dt = DateTime.fromObject({ year: currentYear, month: i + 1 });
         this.months.push({
-          value: dt.toMillis(),
+          value: dt.month,
           label: dt.month,
         });
       }

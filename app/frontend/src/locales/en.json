@@ -22,5 +22,13 @@
     "10": "October",
     "11": "November",
     "12": "December"
-  }
+  },
+  "addSpendingButton": "Add",
+  "expenseAmountPlaceholder": "Enter expense amount",
+  "bitcoinPriceLabel": "Bitcoin Price (USD):",
+  "totalExpenseLabel": "Total:",
+  "noExpenseHistory": "No expense history for selected month.",
+  "amountColumn": "Amount",
+  "btcAmountColumn": "BTC Amount",
+  "timestampColumn": "Timestamp"
 }

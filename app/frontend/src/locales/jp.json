@@ -22,5 +22,13 @@
     "10": "十月",
     "11": "十一月",
     "12": "十二月"
-  }
+  },
+  "addSpendingButton": "追加",
+  "expenseAmountPlaceholder": "金額を入力してください",
+  "bitcoinPriceLabel": "ビットコイン価格（USD）:",
+  "totalExpenseLabel": "合計",
+  "noExpenseHistory": "選択した月の支出履歴はありません。",
+  "amountColumn": "金額",
+  "btcAmountColumn": "BTC金額",
+  "timestampColumn": "日時"
 }

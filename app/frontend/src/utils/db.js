@@ -39,22 +39,25 @@ async function getAllSpendingEntries() {
     return db.getAll(SPENDING_STORE);
 }
 
-async function getSpendingByMonth(startOfMonthISO, endOfMonthISO) {
+async function getSpendingByMonth(year, month) {
+  try {
     const db = await initDatabase();
     const tx = db.transaction(SPENDING_STORE, 'readonly');
     const store = tx.objectStore(SPENDING_STORE);
-    const spendingEntries = await store.getAll(); // Still inefficient for large datasets
 
-    const startOfMonth = DateTime.fromISO(startOfMonthISO);
-    const endOfMonth = DateTime.fromISO(endOfMonthISO);
+    const startOfMonth = DateTime.fromObject({ year, month }).startOf('month').toMillis();
+    const endOfMonth = DateTime.fromObject({ year, month }).endOf('month').toMillis();
 
-    const filteredEntries = spendingEntries.filter(entry => {
-        const entryDateTime = DateTime.fromISO(entry.timestamp);
-        return entryDateTime >= startOfMonth && entryDateTime <= endOfMonth;
-    });
+    // Use IDBKeyRange to query within the specified range
+    const keyRange = IDBKeyRange.bound(startOfMonth, endOfMonth);
+    const spendingEntries = await store.getAll(keyRange);
 
     await tx.done;
-    return filteredEntries;
+    return spendingEntries;
+  } catch (error) {
+    console.error('Error getting spending by month:', error);
+    throw error; // Re-throw to be handled by the caller
+  }
 }
 
 async function clearDatabase() {
