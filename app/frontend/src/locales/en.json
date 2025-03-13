@@ -24,7 +24,7 @@
     "12": "December"
   },
   "addSpendingButton": "Add",
-  "expenseAmountPlaceholder": "Enter expense amount",
+  "expenseAmountPlaceholder": "Enter amount",
   "bitcoinPriceLabel": "Bitcoin Price (USD):",
   "totalExpenseLabel": "Total:",
   "noExpenseHistory": "No expense history for selected month.",
