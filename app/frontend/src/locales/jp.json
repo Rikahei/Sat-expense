@@ -30,5 +30,15 @@
   "noExpenseHistory": "選択した月の支出履歴はありません。",
   "amountColumn": "金額",
   "btcAmountColumn": "BTC金額",
-  "timestampColumn": "日時"
+  "timestampColumn": "日時",
+  "category": {
+    "food_drink": "飲食費",
+    "groceries": "食料品",
+    "transport": "交通費",
+    "shopping": "買い物",
+    "entertainment": "娯楽",
+    "utilities": "光熱費",
+    "health_fitness": "健康・フィットネス",
+    "home": "住居費"
+  }
 }

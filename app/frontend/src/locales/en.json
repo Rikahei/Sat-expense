@@ -30,5 +30,15 @@
   "noExpenseHistory": "No expense history for selected month.",
   "amountColumn": "Amount",
   "btcAmountColumn": "BTC Amount",
-  "timestampColumn": "Timestamp"
+  "timestampColumn": "Timestamp",
+  "category": {
+    "food_drink": "Food & drink",
+    "groceries": "Groceries",
+    "transport": "Transport",
+    "shopping": "Shopping",
+    "entertainment": "Entertainment",
+    "utilities": "Utilities",
+    "health_fitness": "Health & fitness",
+    "home": "Home"
+  }
 }

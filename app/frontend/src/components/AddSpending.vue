@@ -38,9 +38,26 @@
       <!-- Middle Section: Input and Button on Same Line -->
       <div class="flex-[1] flex items-center justify-center gap-4 p-4">
         <div class="flex items-center">
+          <div class="relative w-40">
+            <select v-model="selectedCategory" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-gray-700 dark:text-gray-100">
+              <option value="food_drink">{{ $t('category.food_drink') }}</option>
+              <option value="groceries">{{ $t('category.groceries') }}</option>
+              <option value="transport">{{ $t('category.transport') }}</option>
+              <option value="shopping">{{ $t('category.shopping') }}</option>
+              <option value="entertainment">{{ $t('category.entertainment') }}</option>
+              <option value="utilities">{{ $t('category.utilities') }}</option>
+              <option value="health_fitness">{{ $t('category.health_fitness') }}</option>
+              <option value="home">{{ $t('category.home') }}</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+              <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+              </svg>
+            </div>
+          </div>
           <input
             type="number"
-            class="border border-gray-300 rounded-md p-2 w-64 dark:bg-gray-700 dark:text-gray-100"
+            class="border border-gray-300 rounded-md p-2 w-64 dark:bg-gray-700 dark:text-gray-100 ml-2"
             :placeholder="$t('expenseAmountPlaceholder')"
             v-model="spendingAmount"
           />
@@ -137,6 +154,7 @@ export default {
       spendingHistory: [],
       selectedMonth: null,
       months: [],
+      selectedCategory: 'food_drink',
     };
   },
   watch: {
@@ -202,7 +220,7 @@ export default {
         const cryptoAmount = Number(amount / this.price).toFixed(8);
         const entry = {
           id: timestampMillis,
-          spending_category: '',
+          spending_category: this.selectedCategory,
           title: '',
           currency_type: 'usd',
           amount: amount,
