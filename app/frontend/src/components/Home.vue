@@ -10,6 +10,7 @@ import AddSpending from './AddSpending.vue';
 import MonthlySpend from './MonthlySpend.vue';
 import Setting from './Setting.vue';
 import NavBottom from './NavBottom.vue';
+import ExpenseHistory from './ExpenseHistory.vue';
 
 export default {
   components: {
@@ -17,6 +18,7 @@ export default {
     MonthlySpend,
     Setting,
     NavBottom,
+    ExpenseHistory,
   },
   data() {
     return {

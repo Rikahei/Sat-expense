@@ -26,9 +26,9 @@
                 </p>
               </div>
               <div v-else-if="error" class="error-section">
-                <p>{{ $t('errorFetchingPrice', { error: error }) }}</p> </div>
+                <p>Error!!!</p> </div>
               <div v-else class="loading-section">
-                <p>{{ $t('loadingBitcoinPrice') }}</p>
+                <p>loading...</p>
               </div>
             </div>
           </div>
@@ -64,60 +64,7 @@
           </div>
         </div>
       </div>
-
-      <!-- Bottom Section: expense History -->
-      <div class="flex-[6] flex flex-col p-4">
-        <div class="flex justify-between items-center w-full mb-4">
-          <div class="relative">
-            <select v-model="selectedMonth" class="border border-gray-300 rounded-md p-2 w-48 dark:bg-gray-700 dark:text-gray-100">
-              <option v-for="month in months" :key="month.value" :value="month.value">
-                {{ $t(`months.${month.label}`) }}
-              </option>
-            </select>
-          </div>
-          <p class="dark:text-gray-300">
-            {{ $t('totalExpenseLabel') }}: ${{ totalExpense }}
-            <span class="flex items-center text-xl" v-if="price">
-              <Icon
-                icon="bitcoin-icons:bitcoin-circle-filled"
-                class="w-4 h-4 mr-1 text-yellow-500"
-              />
-              {{ totalBtcSpending }}
-            </span>
-            <span v-else>{{ $t('loadingTotal') }}</span>
-          </p>
-        </div>
-        <div v-if="reversedSpendingHistory.length > 0" class="w-full max-w-md mx-auto overflow-auto custom-scrollbar">
-          <table class="w-full text-left dark:text-gray-300">
-            <thead>
-              <tr>
-                <th class="py-2">{{ $t('amountColumn') }}</th>
-                <th class="py-2">{{ $t('btcAmountColumn') }}</th>
-                <th class="py-2">{{ $t('timestampColumn') }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in reversedSpendingHistory"
-                :key="item.id"
-                class="border-b border-transparent"
-              >
-                <td class="py-2">${{ item.amount }} {{ item.currency_type }}</td>
-                <td class="py-2 flex items-center">
-                  <Icon
-                    v-if="item.crypto_type === 'btc'"
-                    icon="bitcoin-icons:bitcoin-circle-outline"
-                    class="w-4 h-4 mr-1 text-yellow-500"
-                  />
-                  {{ item.crypto_amount }}
-                </td>
-                <td class="py-2">{{ formatTimestamp(item.timestamp) }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p v-else class="dark:text-gray-300">{{ $t('noExpenseHistory') }}</p>
-      </div>
+    <ExpenseHistory :spendingHistory="spendingHistory" @month-changed="handleMonthChanged" class="flex-[6] flex flex-col p-4" ExpenseHistory/>
     </div>
   </div>
 </template>
@@ -128,11 +75,13 @@ import axios from 'axios';
 import { Icon } from '@iconify/vue';
 import { addSpendingEntry, getSpendingByMonth } from '../utils/db';
 import { useI18n } from 'vue-i18n';
-
+import ExpenseHistory from './ExpenseHistory.vue'
+ 
 export default {
   name: 'AddSpending',
   components: {
     Icon,
+    ExpenseHistory,
   },
   setup() {
     const { t } = useI18n();
@@ -248,6 +197,10 @@ export default {
         console.error('Error loading expense history:', error);
         alert(this.$t('errorLoadingHistory')); //Improved error handling
       }
+    },
+    handleMonthChanged(newMonth) {
+      this.selectedMonth = newMonth;
+      this.loadSpendingHistory(DateTime.now().year, this.selectedMonth);
     },
     generateMonths() {
       const now = DateTime.now();
