@@ -6,7 +6,8 @@ services:
     ports:
       - "5173:5173"  # Map port 5173 on your Mac to 5173 in the container
     volumes:
-      - ./app:/app # Mount the current directory (sat-spend) to /app in the container
+      - ./app:/app
+      - /app/frontend/node_modules
     environment:
       - WATCHPACK_POLLING=true  # Ensure hot reloading works with volume mounts
     tty: true  # Keep the container running interactively

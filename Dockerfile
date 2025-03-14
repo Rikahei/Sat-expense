@@ -1,11 +1,14 @@
 # Use official Node.js 22 LTS slim version as the base image
 FROM node:22-slim
 
-# Set working directory inside the container (initially to /app)
-WORKDIR /app
-
-# Change working directory to /app/spending-app
+# Change working directory to /app/frontend
 WORKDIR /app/frontend
+
+# Copy package.json and package-lock.json first to leverage Docker cache
+COPY /app/frontend/package*.json ./
+
+# Install dependencies
+RUN npm install
 
 EXPOSE 5173
 
