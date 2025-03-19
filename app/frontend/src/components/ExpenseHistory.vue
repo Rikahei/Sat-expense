@@ -1,9 +1,14 @@
 <template>
   <div class="w-full max-w-md mx-auto p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
     <div class="flex items-center justify-between mb-4 w-full">
-      <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">
-        {{ $t('expenseHistoryTitle') }}
-      </h5>
+      <div class="flex flex-col">
+        <p class="text-sm text-left leading-none text-gray-900 dark:text-white truncate">
+          {{ $t('totalExpense') }}: ${{ totalExpense }}
+        </p>
+        <p class="text-sm text-left leading-none text-gray-900 dark:text-white truncate">
+          {{ $t('totalBtcSpending') }}: {{ totalBtcSpending }}
+        </p>
+      </div>
       <select
         v-model="selectedMonth"
         class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
@@ -16,7 +21,7 @@
     <div class="w-full">
       <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
         <li v-for="(item, index) in reversedSpendingHistory" :key="item.id" class="py-3 sm:py-4">
-          <div class="flex items-center">
+          <div class="flex items-center justify-between">
             <div class="shrink-0">
               <Icon
                 v-if="item.crypto_type === 'btc'"
@@ -27,16 +32,18 @@
                 <!-- Add a default icon or nothing if not BTC -->
               </span>
             </div>
-            <div class="flex-1 min-w-0 ms-4">
+            <div class="flex-1 text-center">
+              <div class="text-lg inline-flex items-center font-semibold text-gray-900 dark:text-white">
+                {{ item.crypto_amount }} BTC
+              </div>
+            </div>
+            <div class="text-right">
               <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
                 ${{ item.amount }} {{ item.currency_type }}
               </p>
-              <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+              <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                 {{ formatTimestamp(item.timestamp) }}
               </p>
-            </div>
-            <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-              {{ item.crypto_amount }} BTC
             </div>
           </div>
         </li>
@@ -74,7 +81,7 @@ export default {
   },
   watch: {
     selectedMonth(newVal) {
-        this.$emit('month-changed', newVal);
+      this.$emit('month-changed', newVal);
     },
   },
   computed: {
@@ -113,7 +120,6 @@ export default {
         });
       }
     },
-
-  }
+  },
 };
 </script>
