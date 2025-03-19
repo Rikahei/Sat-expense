@@ -64,7 +64,7 @@
           </div>
         </div>
       </div>
-    <ExpenseHistory :spendingHistory="spendingHistory" @month-changed="handleMonthChanged" class="flex-[6] flex flex-col p-4" ExpenseHistory/>
+    <ExpenseHistory :spendingHistory="spendingHistory" @month-changed="handleMonthChanged" class="flex-[6] flex flex-col items-center justify-center p-4" ExpenseHistory/>
     </div>
   </div>
 </template>

@@ -1,60 +1,47 @@
 <template>
-  <div class="flex flex-col p-4">
-    <div class="flex justify-between items-center w-full mb-4">
-      <div class="relative">
-        <select
-          v-model="selectedMonth"
-          class="border border-gray-300 rounded-md p-2 w-48 dark:bg-gray-700 dark:text-gray-100"
-        >
-          <option v-for="month in months" :key="month.value" :value="month.value">
-            {{ $t(`months.${month.label}`) }}
-          </option>
-        </select>
-      </div>
-      <p class="dark:text-gray-300">
-        {{ $t('totalExpenseLabel') }}: ${{ totalExpense }}
-        <span class="flex items-center text-xl">
-          <Icon
-            icon="bitcoin-icons:bitcoin-circle-filled"
-            class="w-4 h-4 mr-1 text-yellow-500"
-          />
-          {{ totalBtcSpending }}
-        </span>
-      </p>
+  <div class="w-full max-w-md mx-auto p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center justify-between mb-4 w-full">
+      <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">
+        {{ $t('expenseHistoryTitle') }}
+      </h5>
+      <select
+        v-model="selectedMonth"
+        class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+      >
+        <option v-for="month in months" :key="month.value" :value="month.value">
+          {{ $t(`months.${month.label}`) }}
+        </option>
+      </select>
     </div>
-    <div
-      v-if="reversedSpendingHistory.length > 0"
-      class="w-full max-w-md mx-auto overflow-auto custom-scrollbar"
-    >
-      <table class="w-full text-left dark:text-gray-300">
-        <thead>
-          <tr>
-            <th class="py-2">{{ $t('amountColumn') }}</th>
-            <th class="py-2">{{ $t('btcAmountColumn') }}</th>
-            <th class="py-2">{{ $t('timestampColumn') }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(item, index) in reversedSpendingHistory"
-            :key="item.id"
-            class="border-b border-transparent"
-          >
-            <td class="py-2">${{ item.amount }} {{ item.currency_type }}</td>
-            <td class="py-2 flex items-center">
+    <div class="w-full">
+      <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+        <li v-for="(item, index) in reversedSpendingHistory" :key="item.id" class="py-3 sm:py-4">
+          <div class="flex items-center">
+            <div class="shrink-0">
               <Icon
                 v-if="item.crypto_type === 'btc'"
                 icon="bitcoin-icons:bitcoin-circle-outline"
-                class="w-4 h-4 mr-1 text-yellow-500"
+                class="w-6 h-6 text-yellow-500"
               />
-              {{ item.crypto_amount }}
-            </td>
-            <td class="py-2">{{ formatTimestamp(item.timestamp) }}</td>
-          </tr>
-        </tbody>
-      </table>
+              <span v-else class="text-gray-500">
+                <!-- Add a default icon or nothing if not BTC -->
+              </span>
+            </div>
+            <div class="flex-1 min-w-0 ms-4">
+              <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                ${{ item.amount }} {{ item.currency_type }}
+              </p>
+              <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                {{ formatTimestamp(item.timestamp) }}
+              </p>
+            </div>
+            <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+              {{ item.crypto_amount }} BTC
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
-    <p v-else class="dark:text-gray-300">{{ $t('noExpenseHistory') }}</p>
   </div>
 </template>
 
@@ -130,26 +117,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px; /* Width of the entire scrollbar */
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Color of the tracking area */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #888; /* Color of the thumb */
-  border-radius: 4px; /* Roundness of the thumb */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Color of the thumb on hover */
-}
-
-.custom-scrollbar {
-  max-height: 22rem; /* Adjust as needed */
-}
-</style>
