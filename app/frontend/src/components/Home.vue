@@ -1,6 +1,6 @@
 <template>
   <div :class="{ dark: isDarkMode }">
-    <component :is="currentComponent" />
+    <component :is="currentComponent" :isDarkMode="isDarkMode" />
     <NavBottom @update-component="updateComponent" />
   </div>
 </template>
