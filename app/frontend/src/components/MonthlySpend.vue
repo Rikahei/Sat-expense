@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 p-4">
     <div class="container mx-auto max-w-3xl">
       <div class="rounded-lg shadow-md p-6">
-        <v-chart class="chart" :option="chartOption" autoresize />
+        <v-chart class="chart" :option="chartOption" @legendselectchanged="handleLegendSelectChanged" autoresize />
       </div>
     </div>
   </div>
@@ -46,17 +46,26 @@ export default {
           },
         },
         tooltip: {
+          backgroundColor: this.isDarkMode ? 'rgb(17 24 39)' : 'rgb(243 244 246)',
           trigger: 'item',
+          formatter: (params) => {
+            return `${this.t(`category.${params.name}`)}: ${params.value} (${params.percent}%)`;
+          },
           textStyle: {
             color: this.isDarkMode ? '#eee' : '#333', // Dynamic text color for title
           },
         },
         legend: {
+          itemWidth: 20,
+          itemHeight: 20,
+          icon: 'circle',
           orient: 'horizontal',
           bottom: 0,
           left: 'center',
           textStyle: {
-            color: this.isDarkMode ? '#eee' : '#333', // Dynamic text color for title
+            color: this.isDarkMode ? '#eee' : '#333',
+            fontSize: 14,
+            fontWeight: 'normal',
           },
           formatter: (name) => this.t(`category.${name}`), // i18n for legend
         },
@@ -113,9 +122,6 @@ export default {
         }],
       };
     },
-    chartContainerStyle() {
-      return this.isDarkMode ? { '--bg-color': '#333', '--text-color': '#eee' } : { '--bg-color': '#fff', '--text-color': '#333' };
-    },
   },
   async mounted() {
     await this.fetchSpendingData();
@@ -148,6 +154,9 @@ export default {
         crypto_amount: categoryTotals[category],
       }));
     },
+    handleLegendSelectChanged(params) {
+      console.log('legendselectchanged', params);
+    },
   },
 };
 </script>
@@ -155,6 +164,6 @@ export default {
 <style scoped>
 .chart {
   width: 100%;
-  height: 400px;
+  height: 25rem;
 }
 </style>
