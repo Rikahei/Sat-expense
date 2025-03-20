@@ -1,75 +1,107 @@
 <template>
-    <div class="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
-        <h1 class="text-2xl font-bold mb-4">Monthly Spending</h1>
-        <FullCalendar ref="fullCalendar" :options="calendarOptions" />
+  <div class="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+    <div class="mt-8">
+      <v-chart class="chart" :option="chartOption" autoresize/>
     </div>
+  </div>
 </template>
 
 <script>
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
 import { getSpendingByMonth } from '../utils/db';
 import { DateTime } from 'luxon';
+import VChart from 'vue-echarts';
+
+import { use } from 'echarts/core';
+import { PieChart } from 'echarts/charts';
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+} from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
+
+use([
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent,
+  PieChart,
+  CanvasRenderer,
+]);
 
 export default {
   name: 'MonthlySpend',
   components: {
-    FullCalendar
+    VChart,
   },
   data() {
     return {
-      calendarOptions: {
-        plugins: [dayGridPlugin, interactionPlugin],
-        initialView: 'dayGridMonth',
-        dateClick: this.handleDateClick,
-        events: [],
-        eventContent: (arg) => {
-          return {
-            html: `<div class="fc-event-title">${arg.event.extendedProps.totalSpend}</div>`
-          }
-        }
-      },
       spendingData: [],
-    }
+      chartBaseOption: {
+        title: {
+          text: 'Monthly Spending Breakdown',
+          left: 'center',
+        },
+        tooltip: {
+          trigger: 'item',
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+        },
+        series: [{
+            name: 'Spending',
+            type: 'pie',
+            radius: '70%',
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderColor: '#fff',
+              borderWidth: 2,
+            },
+            label: {
+              show: true,
+              position: 'outside',
+              formatter: '{b}: {c} ({d}%)',
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '16',
+                fontWeight: 'bold',
+              },
+            },
+            labelLine: {
+              show: true,
+            },
+          }
+        ],
+      },
+    };
+  },
+  computed: {
+    chartData() {
+      return this.spendingData.map((item) => ({
+        value: item.crypto_amount,
+        name: item.spending_category,
+      }));
+    },
+    chartOption() {
+      return {
+        ...this.chartBaseOption,
+        series: [{
+          ...this.chartBaseOption.series[0],
+          data: this.chartData,
+        }],
+      };
+    },
   },
   async mounted() {
     await this.fetchSpendingData();
-    this.calendarOptions.events = this.formatEventsForCalendar(this.spendingData);
-  },
-  watch:{
-    calendarDate: {
-      handler(newVal){
-          this.currentDate = newVal;
-      },
-      immediate: true
-  }
-  },
-  computed: {
-    calendarDate() {
-      if (this.$refs.calendar && this.$refs.calendar.getApi) {
-        const calendarApi = this.$refs.calendar.getApi();
-        return calendarApi.getDate();
-      }
-      return null;
-    }
-  },
-
-  watch:{
-    calendarDate: {
-      handler(newVal){
-          this.currentDate = newVal;
-      },
-      immediate: true
-  }
   },
   methods: {
-    handleDateClick: function(arg) {
-      console.log('date click! ' + arg.dateStr);
-    },
     async fetchSpendingData() {
       try {
-        const today = DateTime.now(); // Use Luxon's DateTime.now()
+        const today = DateTime.now();
         const currentYear = today.year;
         const currentMonth = today.month;
 
@@ -79,30 +111,17 @@ export default {
         console.error('Error fetching spending data:', error);
       }
     },
-    formatEventsForCalendar(spendingData) {
-      // Group spending entries by day
-      const dailySpending = {};
-      spendingData.forEach(entry => {
-        const dateString = DateTime.fromISO(entry.timestamp).toISODate(); // Get YYYY-MM-DD
-        if (!dailySpending[dateString]) {
-          dailySpending[dateString] = [];
-        }
-        dailySpending[dateString].push(entry);
-      });
-      // Create calendar events with daily totals
-      const events = Object.entries(dailySpending).map(([dateString, entries]) => {
-        let totalSpend = 0;
-        entries.forEach(entry => totalSpend += parseFloat(entry.crypto_amount)); //Sum USD amount
-
-        return {
-          title: '',
-          start: dateString,
-          extendedProps: { totalSpend }
-        };
-      });
-
-      return events;
-    }
-  }
-}
+  },
+};
 </script>
+
+<style scoped>
+.chart {
+  height: 100vh;
+  position: relative;
+}
+.container{
+  height: 350px;
+  width: 400px;
+}
+</style>
