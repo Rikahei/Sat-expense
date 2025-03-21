@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full max-w-md mx-auto p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-    <div class="flex items-center justify-between mb-4 w-full">
+  <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flex items-center justify-between mb-4">
       <div class="flex flex-col">
         <p class="text-sm text-left leading-none text-gray-900 dark:text-white truncate">
           {{ $t('totalExpense') }}: ${{ totalExpense }}
@@ -18,7 +18,7 @@
         </option>
       </select>
     </div>
-    <div class="w-full">
+    <div class="h-screen-40 overflow-y-auto">
       <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
         <li v-for="(item, index) in reversedSpendingHistory" :key="item.id" class="py-3 sm:py-4">
           <div class="flex items-center justify-between">

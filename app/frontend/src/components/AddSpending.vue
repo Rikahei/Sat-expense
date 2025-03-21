@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
-    <div class="divide-y divide-gray-300 divide-double flex flex-col h-screen">
+  <div class="h-full bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+    <div class="flex flex-col divide-y divide-gray-300 divide-double">
       <!-- Top Section: Bitcoin Price (Card Layout) -->
-      <div class="flex-[2] flex flex-col items-center justify-center p-8">
+      <div class="flex flex-col items-center justify-center p-8">
         <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
           <div class="flex items-center">
             <div class="w-3/10">
@@ -36,7 +36,7 @@
       </div>
 
       <!-- Middle Section: Input and Button on Same Line -->
-      <div class="flex-[1] flex items-center justify-center p-4">
+      <div class="flex items-center justify-center p-4">
         <div class="mt-2 w-full max-w-lg">
           <div class="flex flex-row rounded-md bg-white">
             <select v-model="selectedCategory" class="flex-none w-28 rounded-l-lg bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
@@ -64,7 +64,9 @@
           </div>
         </div>
       </div>
-    <ExpenseHistory :spendingHistory="spendingHistory" @month-changed="handleMonthChanged" class="flex-[6] flex flex-col items-center justify-center p-4" ExpenseHistory/>
+      <div class="flex items-center justify-center px-4 py-6 bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+        <ExpenseHistory :spendingHistory="spendingHistory" @month-changed="handleMonthChanged" class="w-full max-w-lg" />  <!-- Added class for width control -->
+      </div>
     </div>
   </div>
 </template>

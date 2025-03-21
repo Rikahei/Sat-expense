@@ -2,6 +2,17 @@
   <div class="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 p-4">
     <div class="container mx-auto max-w-3xl">
       <div class="rounded-lg shadow-md p-6">
+        <div class="flex items-center justify-center mb-4">
+          <label for="month-select" class="mr-2">{{ t('date_click') }}:</label>
+          <select
+            v-model="selectedMonth"
+            class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+          >
+            <option v-for="month in months" :key="month.value" :value="month.value">
+              {{ $t(`months.${month.label}`) }}
+            </option>
+          </select>
+        </div>
         <v-chart class="chart" :option="chartOption" @legendselectchanged="handleLegendSelectChanged" autoresize />
       </div>
     </div>
@@ -36,10 +47,12 @@ export default {
   data() {
     return {
       spendingData: [],
+      months: [],
+      selectedMonth: null,
       chartBaseOption: {
         backgroundColor: this.isDarkMode ? 'rgb(17 24 39)' : 'rgb(243 244 246)',
         title: {
-          text: this.t('monthly_spending'), // i18n for title
+          // text: this.t('monthly_spending'), // Removed static title
           left: 'center',
           textStyle: {
             color: this.isDarkMode ? '#eee' : '#333', // Dynamic text color for title
@@ -123,7 +136,14 @@ export default {
       };
     },
   },
+  watch: {
+    selectedMonth(newVal) {
+      this.fetchSpendingData();
+    },
+  },
   async mounted() {
+    this.generateMonths();
+    this.selectedMonth = this.months[(DateTime.now().month - 1)].value;
     await this.fetchSpendingData();
   },
   methods: {
@@ -131,8 +151,7 @@ export default {
       try {
         const today = DateTime.now();
         const currentYear = today.year;
-        const currentMonth = today.month;
-        const data = await getSpendingByMonth(currentYear, currentMonth);
+        const data = await getSpendingByMonth(currentYear, this.selectedMonth);
         this.spendingData = this.getSpendingByCategory(data);
       } catch (error) {
         console.error('Error fetching spending data:', error);
@@ -156,6 +175,17 @@ export default {
     },
     handleLegendSelectChanged(params) {
       console.log('legendselectchanged', params);
+    },
+    generateMonths() {
+      const now = DateTime.now();
+      const currentYear = now.year;
+      for (let i = 0; i < 12; i++) {
+        const dt = DateTime.fromObject({ year: currentYear, month: i + 1 });
+        this.months.push({
+          value: dt.month,
+          label: dt.month,
+        });
+      }
     },
   },
 };
