@@ -24,9 +24,44 @@
           <div class="flex items-center justify-between">
             <div class="shrink-0">
               <Icon
-                v-if="item.crypto_type === 'btc'"
-                icon="bitcoin-icons:bitcoin-circle-outline"
-                class="w-6 h-6 text-yellow-500"
+                v-if="item.spending_category === 'food_drink'"
+                icon="mdi:food-fork-drink"
+                class="size-6"
+              />
+              <Icon
+                v-else-if="item.spending_category === 'groceries'"
+                icon="mdi:baguette"
+                class="size-6"
+              />
+              <Icon
+                v-else-if="item.spending_category === 'transport'"
+                icon="mdi:bus"
+                class="size-6"
+              />
+              <Icon
+                v-else-if="item.spending_category === 'shopping'"
+                icon="mdi:gift-outline"
+                class="size-6"
+              />
+              <Icon
+                v-else-if="item.spending_category === 'entertainment'"
+                icon="mdi:controller"
+                class="size-6"
+              />
+              <Icon
+                v-else-if="item.spending_category === 'utilities'"
+                icon="mdi:lightning-bolt"
+                class="size-6"
+              />
+              <Icon
+                v-else-if="item.spending_category === 'health_fitness'"
+                icon="mdi:heart-pulse"
+                class="size-6"
+              />
+              <Icon
+                v-else-if="item.spending_category === 'home'"
+                icon="mdi:home"
+                class="size-6"
               />
               <span v-else class="text-gray-500">
                 <!-- Add a default icon or nothing if not BTC -->
