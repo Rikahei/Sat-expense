@@ -39,7 +39,8 @@
     "entertainment": "Entertainment",
     "utilities": "Utilities",
     "health_fitness": "Health & fitness",
-    "home": "Home"
+    "home": "Home",
+    "spending": "none"
   },
   "totalExpense": "Total Expense",
   "totalBtcSpending": "Total BTC Spending"

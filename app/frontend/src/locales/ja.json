@@ -39,7 +39,8 @@
     "entertainment": "娯楽",
     "utilities": "光熱費",
     "health_fitness": "健康・フィットネス",
-    "home": "住居費"
+    "home": "住居費",
+    "spending": "なし"
   },
   "totalExpense": "合計支出",
   "totalBtcSpending": "合計BTC支出"

@@ -3,15 +3,18 @@
     <div class="container mx-auto max-w-3xl">
       <div class="rounded-lg shadow-md p-6">
         <div class="flex items-center justify-center mb-4">
-          <label for="month-select" class="mr-2">{{ t('date_click') }}:</label>
-          <select
+          <label for="month-picker" class="mr-2">{{ t('date_click') }}:</label>
+          <DatePicker
+            id="month-picker"
             v-model="selectedMonth"
-            class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
-          >
-            <option v-for="month in months" :key="month.value" :value="month.value">
-              {{ $t(`months.${month.label}`) }}
-            </option>
-          </select>
+            :month-picker="true"
+            :enable-time-picker="false"
+            :auto-apply="true"
+            :hide-actions="true"
+            :locale="locale"
+            :format="'MM/yyyy'"
+            class="w-40 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+          />
         </div>
         <v-chart class="chart" :option="chartOption" @legendselectchanged="handleLegendSelectChanged" autoresize />
       </div>
@@ -28,12 +31,14 @@ import { PieChart } from 'echarts/charts';
 import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { useI18n } from 'vue-i18n';
+import DatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 use([TitleComponent, TooltipComponent, LegendComponent, PieChart, CanvasRenderer]);
 
 export default {
   name: 'MonthlySpend',
-  components: { VChart },
+  components: { VChart, DatePicker },
   props: {
     isDarkMode: {
       type: Boolean,
@@ -41,21 +46,19 @@ export default {
     },
   },
   setup() {
-    const { t } = useI18n();
-    return { t };
+    const { t, locale } = useI18n();
+    return { t, locale };
   },
   data() {
     return {
       spendingData: [],
-      months: [],
       selectedMonth: null,
       chartBaseOption: {
         backgroundColor: this.isDarkMode ? 'rgb(17 24 39)' : 'rgb(243 244 246)',
         title: {
-          // text: this.t('monthly_spending'), // Removed static title
           left: 'center',
           textStyle: {
-            color: this.isDarkMode ? '#eee' : '#333', // Dynamic text color for title
+            color: this.isDarkMode ? '#eee' : '#333',
           },
         },
         tooltip: {
@@ -65,7 +68,7 @@ export default {
             return `${this.t(`category.${params.name}`)}: ${params.value} (${params.percent}%)`;
           },
           textStyle: {
-            color: this.isDarkMode ? '#eee' : '#333', // Dynamic text color for title
+            color: this.isDarkMode ? '#eee' : '#333',
           },
         },
         legend: {
@@ -80,10 +83,10 @@ export default {
             fontSize: 14,
             fontWeight: 'normal',
           },
-          formatter: (name) => this.t(`category.${name}`), // i18n for legend
+          formatter: (name) => this.t(`category.${name}`),
         },
         series: [{
-          name: this.t('spending'), // i18n for series name
+          name: 'spending',
           type: 'pie',
           radius: ['30%', '70%'],
           avoidLabelOverlap: true,
@@ -137,21 +140,22 @@ export default {
     },
   },
   watch: {
-    selectedMonth(newVal) {
-      this.fetchSpendingData();
+    selectedMonth(newDate) {
+      this.fetchSpendingData(newDate);
     },
   },
   async mounted() {
-    this.generateMonths();
-    this.selectedMonth = this.months[(DateTime.now().month - 1)].value;
+    const jsDate = DateTime.now().toJSDate();
+    this.selectedMonth = {
+      year: jsDate.getFullYear(),
+      month: jsDate.getMonth()
+    };
     await this.fetchSpendingData();
   },
   methods: {
-    async fetchSpendingData() {
+    async fetchSpendingData(newDate = this.selectedMonth) {
       try {
-        const today = DateTime.now();
-        const currentYear = today.year;
-        const data = await getSpendingByMonth(currentYear, this.selectedMonth);
+        const data = await getSpendingByMonth(newDate.year, newDate.month + 1); // Add one month for JS date
         this.spendingData = this.getSpendingByCategory(data);
       } catch (error) {
         console.error('Error fetching spending data:', error);
@@ -175,17 +179,6 @@ export default {
     },
     handleLegendSelectChanged(params) {
       console.log('legendselectchanged', params);
-    },
-    generateMonths() {
-      const now = DateTime.now();
-      const currentYear = now.year;
-      for (let i = 0; i < 12; i++) {
-        const dt = DateTime.fromObject({ year: currentYear, month: i + 1 });
-        this.months.push({
-          value: dt.month,
-          label: dt.month,
-        });
-      }
     },
   },
 };
