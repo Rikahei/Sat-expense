@@ -130,8 +130,12 @@ export default {
   methods: {
     async fetchPrice() {
       try {
-        const response = await axios.get('/api/ticker/btcusd/');
-        const currentPrice = parseFloat(response.data.last).toFixed(2);
+        const response = await axios.get('/api/ticker/price', {
+          params: {
+            symbol: 'BTCUSDT',
+          },        
+        });
+        const currentPrice = parseFloat(response.data.price).toFixed(2);
 
         if (this.previousPrice !== null) {
           if (currentPrice > this.previousPrice) {

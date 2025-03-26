@@ -7,9 +7,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://www.bitstamp.net',
+        target: 'https://api.binance.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/api/v2'),
+        rewrite: (path) => path.replace(/^\/api/, '/api/v3'),
       },
     },
   },
