@@ -1,38 +1,10 @@
+<!-- /Users/hei/sat-expense/app/frontend/src/components/AddSpending.vue -->
 <template>
   <div class="h-full bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
     <div class="flex flex-col divide-y divide-gray-300 divide-double">
       <!-- Top Section: Bitcoin Price (Card Layout) -->
       <div class="flex flex-col items-center justify-center p-8">
-        <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
-          <div class="flex items-center">
-            <div class="w-3/10">
-              <Icon
-                icon="bitcoin-icons:bitcoin-circle-filled"
-                class="w-20 h-20 mx-auto text-yellow-500"
-              />
-            </div>
-            <div class="w-7/10 text-right">
-              <div v-if="price" class="price-section">
-                <h2 class="text-xl font-semibold mb-2 dark:text-gray-300">
-                  {{ $t('bitcoinPriceLabel') }}
-                </h2>
-                <p
-                  class="price"
-                  :class="{ up: priceChange === 'up', down: priceChange === 'down' }"
-                >
-                  <span v-if="priceChange === 'up'" class="arrow">↑</span>
-                  <span v-else-if="priceChange === 'down'" class="arrow">↓</span>
-                  ${{ price }}
-                </p>
-              </div>
-              <div v-else-if="error" class="error-section">
-                <p>Error!!!</p> </div>
-              <div v-else class="loading-section">
-                <p>loading...</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CryptoPriceCard :price="price" :error="error" />
       </div>
 
       <!-- Middle Section: Input and Button on Same Line -->
@@ -74,16 +46,16 @@
 <script>
 import { DateTime } from 'luxon';
 import axios from 'axios';
-import { Icon } from '@iconify/vue';
 import { addSpendingEntry, getSpendingByMonth } from '../utils/db';
 import { useI18n } from 'vue-i18n';
 import ExpenseHistory from './ExpenseHistory.vue'
- 
+import CryptoPriceCard from './CryptoPriceCard.vue';
+
 export default {
   name: 'AddSpending',
   components: {
-    Icon,
     ExpenseHistory,
+    CryptoPriceCard,
   },
   setup() {
     const { t } = useI18n();
@@ -93,8 +65,6 @@ export default {
     return {
       price: null,
       error: null,
-      priceChange: null,
-      previousPrice: null,
       intervalId: null,
       spendingAmount: '',
       spendingHistory: [],
@@ -137,18 +107,7 @@ export default {
         });
         const currentPrice = parseFloat(response.data.price).toFixed(2);
 
-        if (this.previousPrice !== null) {
-          if (currentPrice > this.previousPrice) {
-            this.priceChange = 'up';
-          } else if (currentPrice < this.previousPrice) {
-            this.priceChange = 'down';
-          } else {
-            this.priceChange = null;
-          }
-        }
-
         this.price = currentPrice;
-        this.previousPrice = currentPrice;
       } catch (err) {
         this.error = err.message;
         if (err.response) {
@@ -214,41 +173,6 @@ export default {
 .home {
   text-align: center;
   margin-top: 0px;
-}
-
-.price-section {
-  margin-top: 20px;
-}
-
-.price {
-  font-size: 2rem;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.price.up {
-  color: green;
-}
-
-.price.down {
-  color: red;
-}
-
-.arrow {
-  margin-right: 5px;
-  font-size: 1.5rem;
-}
-
-.error-section {
-  color: red;
-  margin-top: 20px;
-}
-
-.loading-section {
-  color: blue;
-  margin-top: 20px;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
