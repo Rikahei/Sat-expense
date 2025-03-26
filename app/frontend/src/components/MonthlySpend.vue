@@ -11,6 +11,7 @@
             :enable-time-picker="false"
             :auto-apply="true"
             :hide-actions="true"
+            :clearable="false"
             :locale="locale"
             :format="'MM/yyyy'"
             class="w-40 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"

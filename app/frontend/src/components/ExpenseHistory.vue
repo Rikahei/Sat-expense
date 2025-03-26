@@ -9,14 +9,17 @@
           {{ $t('totalBtcSpending') }}: {{ totalBtcSpending }}
         </p>
       </div>
-      <select
+      <DatePicker
         v-model="selectedMonth"
-        class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
-      >
-        <option v-for="month in months" :key="month.value" :value="month.value">
-          {{ $t(`months.${month.label}`) }}
-        </option>
-      </select>
+        :month-picker="true"
+        :enable-time-picker="false"
+        :auto-apply="true"
+        :hide-actions="true"
+        :clearable="false"
+        :locale="locale"
+        :format="'MM/yyyy'"
+        class="w-40 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+      />
     </div>
     <div class="h-screen-40 overflow-y-auto">
       <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -91,11 +94,14 @@
 import { DateTime } from 'luxon';
 import { Icon } from '@iconify/vue';
 import { useI18n } from 'vue-i18n';
+import DatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css';
 
 export default {
   name: 'ExpenseHistory',
   components: {
     Icon,
+    DatePicker,
   },
   props: {
     spendingHistory: {
@@ -105,18 +111,17 @@ export default {
     },
   },
   setup() {
-    const { t } = useI18n();
-    return { t };
+    const { t, locale } = useI18n();
+    return { t, locale };
   },
   data() {
     return {
       selectedMonth: null,
-      months: [],
     };
   },
   watch: {
     selectedMonth(newVal) {
-      this.$emit('month-changed', newVal);
+      this.$emit('month-changed', this.handleJsDate(newVal));
     },
   },
   computed: {
@@ -134,27 +139,21 @@ export default {
       return [...this.spendingHistory].reverse();
     },
   },
-  async mounted() {
-    this.generateMonths();
-    this.selectedMonth = this.months[(DateTime.now().month - 1)].value;
-    this.$emit('month-changed', this.selectedMonth);
+  mounted() {
+    const jsDate = DateTime.now().toJSDate();
+    this.selectedMonth = {
+      year: jsDate.getFullYear(),
+      month: jsDate.getMonth() //Month is 0-indexed in JS Date
+    };
   },
   methods: {
     formatTimestamp(timestamp) {
       const dt = DateTime.fromISO(timestamp);
       return dt.toFormat('yy/MM/dd, HH:mm');
     },
-    generateMonths() {
-      const now = DateTime.now();
-      const currentYear = now.year;
-      for (let i = 0; i < 12; i++) {
-        const dt = DateTime.fromObject({ year: currentYear, month: i + 1 });
-        this.months.push({
-          value: dt.month,
-          label: dt.month,
-        });
-      }
-    },
+    handleJsDate(jsDate){
+      return {year:jsDate.year, month:jsDate.month + 1};
+    }
   },
 };
 </script>

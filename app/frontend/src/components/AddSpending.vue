@@ -105,7 +105,7 @@ export default {
   },
   watch: {
     selectedMonth(newVal, oldVal) {
-      this.loadSpendingHistory(DateTime.now().year, newVal);
+      this.loadSpendingHistory(newVal.year, newVal.month);
     }
   },
   computed: {
@@ -122,8 +122,6 @@ export default {
   async mounted() {
     this.fetchPrice();
     this.intervalId = setInterval(this.fetchPrice, 30000);
-    this.generateMonths();
-    this.selectedMonth = this.months[(DateTime.now().month - 1)].value;
     this.loadSpendingHistory(DateTime.now().year, DateTime.now().month);
   },
   unmounted() {
@@ -178,7 +176,7 @@ export default {
         try {
           await addSpendingEntry(entry);
           this.spendingHistory.push(entry);
-          await this.loadSpendingHistory();
+          await this.loadSpendingHistory(this.selectedMonth.year, this.selectedMonth.month);
         } catch (error) {
           console.error('Error adding spending entry:', error);
           alert(this.$t('errorAddingEntry')); //Improved error handling
@@ -200,20 +198,9 @@ export default {
         alert(this.$t('errorLoadingHistory')); //Improved error handling
       }
     },
-    handleMonthChanged(newMonth) {
-      this.selectedMonth = newMonth;
-      this.loadSpendingHistory(DateTime.now().year, this.selectedMonth);
-    },
-    generateMonths() {
-      const now = DateTime.now();
-      const currentYear = now.year;
-      for (let i = 0; i < 12; i++) {
-        const dt = DateTime.fromObject({ year: currentYear, month: i + 1 });
-        this.months.push({
-          value: dt.month,
-          label: dt.month,
-        });
-      }
+    handleMonthChanged(newDate) {
+      this.selectedMonth = newDate;
+      this.loadSpendingHistory(newDate.year, newDate.month);
     },
   },
 };
