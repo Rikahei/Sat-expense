@@ -105,16 +105,16 @@ export default {
   methods: {
     async fetchPrice() {
       try {
-        const response = await axios.get('/api/ticker/price', {
+        const response = await axios.get('https://api.binance.com/api/v3/ticker/price', {
           params: {
             symbol: this.cryptoSymbol,
           },
         });
-        const currentPrice = parseFloat(response.data.price);
-        this.price = currentPrice;
-      } catch (err) {
-        this.error = err.message;
-        // ... (Your error handling remains the same) ...
+        this.price = parseFloat(response.data.price);
+        this.error = null; // Clear any previous errors
+      } catch (error) {
+        this.error = error.message;
+        console.error('Error fetching price:', error); // Log the error for debugging
       }
     },
     async addSpending() {
