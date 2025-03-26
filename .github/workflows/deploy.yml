@@ -1,0 +1,37 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Or your main branch name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22' # Or your preferred Node.js version
+
+      - name: Install dependencies (Frontend)
+        run: |
+          cd app/frontend
+          npm install
+
+      - name: Build (Frontend)
+        run: |
+          cd app/frontend
+          npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: rikaheijp/github-pages-deploy-action@v4
+        with:
+          folder: app/frontend/dist # The folder where your built files are
+          branch: gh-pages # The branch where you want to deploy
+          clean: true # Remove previous files
