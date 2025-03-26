@@ -1,22 +1,24 @@
 <template>
   <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 dark:bg-gray-800">
     <div class="flex items-center">
-      <div class="w-3/10">
+      <div class="w-2/10">
         <Icon
           icon="bitcoin-icons:bitcoin-circle-filled"
-          class="w-20 h-20 mx-auto text-yellow-500"
+          class="w-20 h-20 text-yellow-500"
         />
       </div>
-      <div class="w-7/10 text-right">
+      <div class="w-8/10 text-right">
         <div v-if="price" class="price-section">
-          <h2 class="text-xl font-semibold mb-2 dark:text-gray-300">
-            {{ $t('bitcoinPriceLabel') }}
+          <h2 class="text-l font-semibold mb-2 dark:text-gray-300">
+            {{ $t('bitcoinPriceLabel') }} ({{ currency }})
           </h2>
-          <p class="price" :class="{ up: priceChange === 'up', down: priceChange === 'down' }">
-            <span v-if="priceChange === 'up'" class="arrow">↑</span>
-            <span v-else-if="priceChange === 'down'" class="arrow">↓</span>
-            ${{ price }}
-          </p>
+          <div class="price-container">
+            <p class="price" :class="{ up: priceChange === 'up', down: priceChange === 'down' }">
+              <span v-if="priceChange === 'up'" class="arrow">↑</span>
+              <span v-else-if="priceChange === 'down'" class="arrow">↓</span>
+              ${{ price }}
+            </p>
+          </div>
         </div>
         <div v-else-if="error" class="error-section">
           <p>Error!!!</p>
@@ -44,6 +46,10 @@ export default {
     error: {
       type: String,
       default: null,
+    },
+    currency: { // Added currency prop
+      type: String,
+      default: 'USDT',
     },
   },
   data () {
@@ -80,12 +86,16 @@ export default {
   margin-top: 20px;
 }
 
+.price-container {
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+}
+
 .price {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bold;
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 .price.up {

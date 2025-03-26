@@ -25,7 +25,7 @@
   },
   "addSpendingButton": "Add",
   "expenseAmountPlaceholder": "Enter amount",
-  "bitcoinPriceLabel": "Bitcoin Price (USD):",
+  "bitcoinPriceLabel": "Bitcoin Price",
   "totalExpenseLabel": "Total:",
   "noExpenseHistory": "No expense history for selected month.",
   "amountColumn": "Amount",

@@ -25,7 +25,7 @@
   },
   "addSpendingButton": "追加",
   "expenseAmountPlaceholder": "金額入力",
-  "bitcoinPriceLabel": "ビットコイン価格（USD）:",
+  "bitcoinPriceLabel": "ビットコイン価格",
   "totalExpenseLabel": "合計",
   "noExpenseHistory": "選択した月の支出履歴はありません。",
   "amountColumn": "金額",

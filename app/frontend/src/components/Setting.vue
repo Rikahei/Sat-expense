@@ -29,6 +29,18 @@
         <option value="ja">{{ $t('japanese') }}</option>
       </select>
     </div>
+    <div class="grid grid-cols-1 gap-4 mt-4">
+      <label for="currencySelect" class="mr-2 text-gray-700 dark:text-gray-300">{{ $t('currency') }}:</label>
+      <select
+        id="currencySelect"
+        v-model="selectedCurrency"
+        @change="setCurrencyLocalStorage"
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      >
+        <option value="USDT">USDT</option>
+        <option value="JPY">JPY</option>
+      </select>
+    </div>
   </div>
 </template>
 
@@ -37,9 +49,17 @@ import { getAllSpendingEntries, addSpendingEntry, clearDatabase } from '../utils
 
 export default {
   name: 'Setting',
+  data() {
+    return {
+      selectedCurrency: localStorage.getItem('currency') || 'USD', // Default to USD if not set
+    };
+  },
   methods: {
     setLocaleLocalStorage() {
       localStorage.setItem('locale', this.$i18n.locale);
+    },
+    setCurrencyLocalStorage() {
+      localStorage.setItem('currency', this.selectedCurrency);
     },
     async exportData() {
       try {

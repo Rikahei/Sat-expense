@@ -1,7 +1,7 @@
 <template>
   <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
     <div class="flex items-center justify-between mb-4">
-      <div class="flex flex-col">
+      <div class="flex flex-col pr-2">
         <p class="text-sm text-left leading-none text-gray-900 dark:text-white truncate">
           {{ $t('totalExpense') }}: ${{ totalExpense }}
         </p>
@@ -18,7 +18,7 @@
         :clearable="false"
         :locale="locale"
         :format="'MM/yyyy'"
-        class="w-40 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
+        class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500"
       />
     </div>
     <div class="h-screen-40 overflow-y-auto">
