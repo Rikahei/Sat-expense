@@ -148,8 +148,8 @@ export default {
   },
   methods: {
     formatTimestamp(timestamp) {
-      const dt = DateTime.fromISO(timestamp);
-      return dt.toFormat('yy/MM/dd, HH:mm');
+      // Directly use DateTime.fromMillis(timestamp)
+      return DateTime.fromMillis(timestamp).toFormat('yy/MM/dd, HH:mm');
     },
     handleJsDate(jsDate){
       return {year:jsDate.year, month:jsDate.month + 1};

@@ -121,10 +121,8 @@ export default {
       if (this.spendingAmount && !isNaN(Number(this.spendingAmount)) && Number(this.spendingAmount) > 0) {
         const amount = Number(this.spendingAmount);
         const currentTimestamp = DateTime.now();
-        const timestampMillis = currentTimestamp.toMillis();
         const cryptoAmount = Number(amount / this.price).toFixed(8);
         const entry = {
-          id: timestampMillis,
           spending_category: this.selectedCategory,
           title: '',
           currency_type: this.currency, // Set currency_type here
@@ -132,7 +130,7 @@ export default {
           crypto_type: 'btc',
           crypto_amount: cryptoAmount,
           crypto_price: this.price,
-          timestamp: currentTimestamp.toISO(),
+          timestamp: currentTimestamp.toMillis(),
         };
         try {
           await addSpendingEntry(entry);
@@ -146,10 +144,6 @@ export default {
       } else {
         alert(this.$t('invalidAmount'));
       }
-    },
-    formatTimestamp(timestamp) {
-      const dt = DateTime.fromISO(timestamp);
-      return dt.toFormat('yy/MM/dd, HH:mm');
     },
     async loadSpendingHistory(year, month) {
       try {

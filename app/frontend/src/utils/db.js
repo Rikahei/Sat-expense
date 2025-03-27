@@ -3,17 +3,19 @@ import { openDB } from 'idb';
 import { DateTime } from 'luxon';
 
 const DB_NAME = 'spending-db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const SPENDING_STORE = 'spending';
 
 async function initDatabase() {
   return openDB(DB_NAME, DB_VERSION, {
     upgrade(db, oldVersion, newVersion) {
       if (oldVersion < 1) {
-        db.createObjectStore(SPENDING_STORE, {
-          keyPath: 'id', // Use 'id' as the key path
-          // autoIncrement: true, // Remove autoIncrement as we'll manage IDs ourselves
+        const store = db.createObjectStore(SPENDING_STORE, {
+          keyPath: 'id',
+          autoIncrement: true,
         });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
+        store.createIndex('spending_category', 'spending_category', { unique: false });
       }
     },
   });
@@ -23,11 +25,6 @@ async function addSpendingEntry(entry) {
   const db = await initDatabase();
   const tx = db.transaction(SPENDING_STORE, 'readwrite');
   const store = tx.objectStore(SPENDING_STORE);
-
-  // Ensure the entry has an 'id' property
-  if (!entry.id) {
-    throw new Error("Spending entry must have an 'id' property.");
-  }
 
   await store.add(entry);
   await tx.done;
@@ -40,24 +37,16 @@ async function getAllSpendingEntries() {
 }
 
 async function getSpendingByMonth(year, month) {
-  try {
-    const db = await initDatabase();
-    const tx = db.transaction(SPENDING_STORE, 'readonly');
-    const store = tx.objectStore(SPENDING_STORE);
+  // get data from year & month by indexed timestamp.
+  const db = await initDatabase();
+  const tx = db.transaction(SPENDING_STORE, 'readonly');
+  const store = tx.objectStore(SPENDING_STORE);
+  const index = store.index('timestamp');
+  const start = DateTime.fromObject({ year, month, day: 1 }).toMillis();
+  const end = DateTime.fromObject({ year, month, day: 1 }).plus({ months: 1 }).toMillis();
 
-    const startOfMonth = DateTime.fromObject({ year, month }).startOf('month').toMillis();
-    const endOfMonth = DateTime.fromObject({ year, month }).endOf('month').toMillis();
-
-    // Use IDBKeyRange to query within the specified range
-    const keyRange = IDBKeyRange.bound(startOfMonth, endOfMonth);
-    const spendingEntries = await store.getAll(keyRange);
-
-    await tx.done;
-    return spendingEntries;
-  } catch (error) {
-    console.error('Error getting spending by month:', error);
-    throw error; // Re-throw to be handled by the caller
-  }
+  const range = IDBKeyRange.bound(start, end, false, true);
+  return index.getAll(range);
 }
 
 async function clearDatabase() {
