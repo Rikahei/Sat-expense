@@ -18,12 +18,18 @@ jobs:
         uses: actions/setup-node@v4
 
       - name: Install dependencies
-        run: | 
+        run: |
           cd app/frontend
           npm ci
 
-      - name: Build project
-        run: | 
+      - name: Run Vitest tests
+        run: |
+          cd app/frontend
+          npm test  # Assumes 'test' script in package.json runs Vitest
+
+      - name: Build project (only if tests pass)
+        if: ${{ success() }}
+        run: |
           cd app/frontend
           npm run build
 
