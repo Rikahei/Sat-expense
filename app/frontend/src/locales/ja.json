@@ -43,5 +43,8 @@
     "spending": "なし"
   },
   "totalExpense": "合計支出",
-  "totalBtcSpending": "合計BTC支出"
+  "totalBtcSpending": "合計BTC支出",
+  "error": {
+    "errorLoadingHistory" : "Error loading history"
+  }
 }

@@ -40,7 +40,7 @@ export default {
   },
   props: {
     price: {
-      type: String,
+      type: Number,
       default: null,
     },
     error: {

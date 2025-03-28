@@ -150,7 +150,7 @@ export default {
         this.spendingHistory = await getSpendingByMonth(year, month);
       } catch (error) {
         console.error('Error loading expense history:', error);
-        alert(this.$t('errorLoadingHistory')); //Improved error handling
+        alert(this.$t('error.errorLoadingHistory')); //Improved error handling
       }
     },
     handleMonthChanged(newDate) {

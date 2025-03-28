@@ -43,5 +43,8 @@
     "spending": "none"
   },
   "totalExpense": "Total Expense",
-  "totalBtcSpending": "Total BTC Spending"
+  "totalBtcSpending": "Total BTC Spending",
+  "error": {
+    "errorLoadingHistory" : "Error loading history"
+  }
 }
