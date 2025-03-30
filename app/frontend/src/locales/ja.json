@@ -46,5 +46,8 @@
   "totalBtcSpending": "合計BTC支出",
   "error": {
     "errorLoadingHistory" : "Error loading history"
-  }
+  },
+  "editExpense": "支出を編集",
+  "editing": "編集",
+  "close": "閉じる"
 }

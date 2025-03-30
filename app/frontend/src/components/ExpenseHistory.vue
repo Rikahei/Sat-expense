@@ -23,7 +23,12 @@
     </div>
     <div class="h-screen-40 overflow-y-auto">
       <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
-        <li v-for="(item, index) in reversedSpendingHistory" :key="item.id" class="py-3 sm:py-4">
+        <li
+          v-for="(item, index) in reversedSpendingHistory"
+          :key="item.id"
+          class="p-3 sm:py-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+          @click="openEditModal(item)"
+        >
           <div class="flex items-center justify-between">
             <div class="shrink-0">
               <Icon
@@ -87,6 +92,12 @@
         </li>
       </ul>
     </div>
+    <!-- Edit Modal -->
+    <EditExpenseModal
+      v-if="isEditModalOpen"
+      :item="editingItem"
+      @close="closeEditModal"
+    />
   </div>
 </template>
 
@@ -96,12 +107,14 @@ import { Icon } from '@iconify/vue';
 import { useI18n } from 'vue-i18n';
 import DatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
+import EditExpenseModal from './EditExpenseModal.vue';
 
 export default {
   name: 'ExpenseHistory',
   components: {
     Icon,
     DatePicker,
+    EditExpenseModal,
   },
   props: {
     spendingHistory: {
@@ -117,6 +130,8 @@ export default {
   data() {
     return {
       selectedMonth: null,
+      isEditModalOpen: false,
+      editingItem: null,
     };
   },
   watch: {
@@ -153,7 +168,15 @@ export default {
     },
     handleJsDate(jsDate){
       return {year:jsDate.year, month:jsDate.month + 1};
-    }
+    },
+    openEditModal(item) {
+      this.editingItem = item;
+      this.isEditModalOpen = true;
+    },
+    closeEditModal() {
+      this.isEditModalOpen = false;
+      this.editingItem = null;
+    },
   },
 };
 </script>

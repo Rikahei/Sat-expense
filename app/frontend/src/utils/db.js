@@ -70,4 +70,17 @@ async function deleteSpendingEntry(id) {
     await tx.done;
 }
 
-export { addSpendingEntry, getAllSpendingEntries, getSpendingByMonth, clearDatabase, getSpendingEntryById, deleteSpendingEntry };
+async function updateSpendingEntry(id, updatedEntry) {
+  const db = await initDatabase();
+  const tx = db.transaction(SPENDING_STORE, 'readwrite');
+  const store = tx.objectStore(SPENDING_STORE);
+
+  // Ensure the updated entry has the correct ID
+  updatedEntry.id = id;
+
+  await store.put(updatedEntry);
+  await tx.done;
+  console.log('Spending entry updated:', updatedEntry);
+}
+
+export { addSpendingEntry, getAllSpendingEntries, getSpendingByMonth, clearDatabase, getSpendingEntryById, deleteSpendingEntry, updateSpendingEntry };

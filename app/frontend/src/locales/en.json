@@ -46,5 +46,8 @@
   "totalBtcSpending": "Total BTC Spending",
   "error": {
     "errorLoadingHistory" : "Error loading history"
-  }
+  },
+  "editExpense": "Edit Expense",
+  "editing": "Editing",
+  "close": "Close"
 }
