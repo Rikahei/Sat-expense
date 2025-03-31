@@ -49,6 +49,8 @@ import { addSpendingEntry, getSpendingByMonth } from '../utils/db';
 import { useI18n } from 'vue-i18n';
 import ExpenseHistory from './ExpenseHistory.vue';
 import CryptoPriceCard from './CryptoPriceCard.vue';
+import { useSpendingStore } from '../stores/spendingStore';
+import { storeToRefs } from 'pinia';
 
 export default {
   name: 'AddSpending',
@@ -58,7 +60,9 @@ export default {
   },
   setup() {
     const { t } = useI18n();
-    return { t };
+    const spendingStore = useSpendingStore();
+    const { needReload } = storeToRefs(spendingStore);
+    return { t, needReload, spendingStore };
   },
   data() {
     return {
@@ -70,7 +74,7 @@ export default {
       selectedMonth: null,
       months: [],
       selectedCategory: 'food_drink',
-      currency: localStorage.getItem('currency') || 'USDT', // Default to USDT
+      currency: localStorage.getItem('currency') || 'USDT',
     };
   },
   watch: {
@@ -78,11 +82,16 @@ export default {
       this.loadSpendingHistory(newVal.year, newVal.month);
     },
     currency(newVal, oldVal) {
-      this.fetchPrice(); // Update price when currency changes
-    }
+      this.fetchPrice();
+    },
+    needReload(newVal) {
+      if (newVal) {
+        this.loadSpendingHistory(this.selectedMonth.year, this.selectedMonth.month);
+        this.spendingStore.resetNeedReload();
+      }
+    },
   },
   computed: {
-    // ... (Your computed properties remain the same) ...
     cryptoSymbol() {
       switch (this.currency) {
         case 'USDT':
@@ -90,7 +99,7 @@ export default {
         case 'JPY':
           return 'BTCJPY';
         default:
-          return 'BTCUSDT'; // Default to BTCUSDT if currency is unknown
+          return 'BTCUSDT';
       }
     }
   },
@@ -111,10 +120,10 @@ export default {
           },
         });
         this.price = parseFloat(response.data.price);
-        this.error = null; // Clear any previous errors
+        this.error = null;
       } catch (error) {
         this.error = error.message;
-        console.error('Error fetching price:', error); // Log the error for debugging
+        console.error('Error fetching price:', error);
       }
     },
     async addSpending() {
@@ -125,7 +134,7 @@ export default {
         const entry = {
           spending_category: this.selectedCategory,
           title: '',
-          currency_type: this.currency, // Set currency_type here
+          currency_type: this.currency,
           amount: amount,
           crypto_type: 'btc',
           crypto_amount: cryptoAmount,
@@ -138,7 +147,7 @@ export default {
           await this.loadSpendingHistory(this.selectedMonth.year, this.selectedMonth.month);
         } catch (error) {
           console.error('Error adding spending entry:', error);
-          alert(this.$t('errorAddingEntry')); //Improved error handling
+          alert(this.$t('errorAddingEntry'));
         }
         this.spendingAmount = '';
       } else {
@@ -150,7 +159,7 @@ export default {
         this.spendingHistory = await getSpendingByMonth(year, month);
       } catch (error) {
         console.error('Error loading expense history:', error);
-        alert(this.$t('error.errorLoadingHistory')); //Improved error handling
+        alert(this.$t('error.errorLoadingHistory'));
       }
     },
     handleMonthChanged(newDate) {

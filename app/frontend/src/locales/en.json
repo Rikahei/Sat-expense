@@ -49,5 +49,19 @@
   },
   "editExpense": "Edit Expense",
   "editing": "Editing",
-  "close": "Close"
+  "close": "Close",
+  "editExpenseModal": {
+    "editExpense": "Edit Expense",
+    "editing": "Editing",
+    "spendingDate": "Spending Date",
+    "spendingCategory": "Spending Category",
+    "title": "Title",
+    "currencyType": "Currency Type",
+    "amount": "Amount",
+    "cryptoPrice": "Crypto Price",
+    "cryptoAmount": "Crypto Amount",
+    "close": "Close",
+    "save": "Save",
+    "errorUpdatingSpendingEntry": "Error updating spending entry"
+  }
 }
