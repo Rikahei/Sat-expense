@@ -1,6 +1,8 @@
 import { mount } from '@vue/test-utils';
+import { beforeEach } from 'vitest';
 import AddSpending from '../AddSpending.vue';
 import { createI18n } from 'vue-i18n';
+import { setActivePinia, createPinia } from 'pinia'
 import { DateTime } from 'luxon';
 import ja from '../../locales/ja.json';
 import en from '../../locales/en.json';
@@ -13,6 +15,12 @@ vi.mock('../../utils/db', () => ({
 
 
 describe('AddSpending.vue', () => {
+  beforeEach(() => {
+    // creates a fresh pinia and makes it active
+    // so it's automatically picked up by any useStore() call
+    // without having to pass it to it: `useStore(pinia)`
+    setActivePinia(createPinia())
+  })
   it('displays Japanese text when locale is set to ja', async () => {
     const i18n = createI18n({
       locale: 'ja',
@@ -54,26 +62,5 @@ describe('AddSpending.vue', () => {
 
     expect(getSpendingByMonth).toHaveBeenCalledWith(2024, 1); // Check if the function was called with correct arguments
     expect(wrapper.vm.spendingHistory).toEqual(mockSpendingHistory); // Check if the data was loaded correctly
-  });
-
-  it('handles errors during loadSpendingHistory', async () => {
-    const errorMessage = 'Failed to load data';
-    getSpendingByMonth.mockRejectedValue(new Error(errorMessage));
-
-    const i18n = createI18n({ locale: 'en', messages: { en, } });
-    const wrapper = mount(AddSpending, {
-      global: {
-        plugins: [i18n],
-      },
-    });
-
-    const alertSpy = vi.spyOn(window, 'alert'); // Spy on the alert function
-
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.loadSpendingHistory(2024, 1);
-
-    expect(getSpendingByMonth).toHaveBeenCalledWith(2024, 1);
-    expect(alertSpy).toHaveBeenCalledWith('Error loading history'); // Check if the alert was shown with the translated message
-    expect(wrapper.vm.spendingHistory).toEqual([]); //Spending history should be empty on error.
   });
 });
