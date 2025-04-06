@@ -42,6 +42,26 @@
   },
   "totalExpense": "合計支出",
   "totalBtcSpending": "合計BTC支出",
+  "error": {
+    "errorLoadingHistory" : "Error loading history"
+  },
+  "editExpense": "支出を編集",
+  "editing": "編集",
+  "close": "閉じる",
+  "editExpenseModal": {
+    "editExpense": "支出を編集",
+    "editing": "編集",
+    "spendingDate": "支出日",
+    "spendingCategory": "支出カテゴリ",
+    "title": "タイトル",
+    "currencyType": "通貨タイプ",
+    "amount": "金額",
+    "cryptoPrice": "暗号通貨価格",
+    "cryptoAmount": "暗号通貨量",
+    "close": "閉じる",
+    "save": "保存",
+    "errorUpdatingSpendingEntry": "支出項目の更新中にエラーが発生しました"
+  },
   "setting": {
     "exportData": "データをエクスポート",
     "importData": "データをインポート",

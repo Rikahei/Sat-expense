@@ -42,6 +42,26 @@
   },
   "totalExpense": "Total Expense",
   "totalBtcSpending": "Total BTC Spending",
+  "error": {
+    "errorLoadingHistory" : "Error loading history"
+  },
+  "editExpense": "Edit Expense",
+  "editing": "Editing",
+  "close": "Close",
+  "editExpenseModal": {
+    "editExpense": "Edit Expense",
+    "editing": "Editing",
+    "spendingDate": "Spending Date",
+    "spendingCategory": "Spending Category",
+    "title": "Title",
+    "currencyType": "Currency Type",
+    "amount": "Amount",
+    "cryptoPrice": "Crypto Price",
+    "cryptoAmount": "Crypto Amount",
+    "close": "Close",
+    "save": "Save",
+    "errorUpdatingSpendingEntry": "Error updating spending entry"
+  },
   "setting": {
     "exportData": "Export Data",
     "importData": "Import Data",

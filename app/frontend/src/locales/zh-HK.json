@@ -42,6 +42,26 @@
   },
   "totalExpense": "總支出",
   "totalBtcSpending": "總比特幣支出",
+  "error": {
+    "errorLoadingHistory": "載入歷史記錄時出錯"
+  },
+  "editExpense": "編輯支出",
+  "editing": "編輯中",
+  "close": "關閉",
+  "editExpenseModal": {
+    "editExpense": "編輯支出",
+    "editing": "編輯中",
+    "spendingDate": "支出日期",
+    "spendingCategory": "支出類別",
+    "title": "標題",
+    "currencyType": "貨幣類型",
+    "amount": "金額",
+    "cryptoPrice": "加密貨幣價格",
+    "cryptoAmount": "加密貨幣數量",
+    "close": "關閉",
+    "save": "儲存",
+    "errorUpdatingSpendingEntry": "更新支出項目時出錯"
+  },
   "setting": {
     "exportData": "匯出資料",
     "importData": "匯入資料",
