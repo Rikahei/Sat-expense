@@ -1,10 +1,12 @@
 import { createI18n } from 'vue-i18n';
 import en from './locales/en.json';
 import ja from './locales/ja.json';
+import zh_hk from './locales/zh-HK.json';
 
 const messages = {
   en,
   ja,
+  zh_hk
 };
 
 // Get the user's browser language

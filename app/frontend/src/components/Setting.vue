@@ -27,6 +27,7 @@
       >
         <option value="en">{{ $t('english') }}</option>
         <option value="ja">{{ $t('japanese') }}</option>
+        <option value="zh_hk">{{ $t('chinese_hk') }}</option>
       </select>
     </div>
     <div class="grid grid-cols-1 gap-4 mt-4">

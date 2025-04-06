@@ -7,6 +7,7 @@
   "language": "Language",
   "english": "English",
   "japanese": "日本語",
+  "chinese_hk": "中文(香港)",
   "months": {
     "1": "January",
     "2": "February",
@@ -41,27 +42,6 @@
   },
   "totalExpense": "Total Expense",
   "totalBtcSpending": "Total BTC Spending",
-<<<<<<< HEAD
-  "error": {
-    "errorLoadingHistory" : "Error loading history"
-  },
-  "editExpense": "Edit Expense",
-  "editing": "Editing",
-  "close": "Close",
-  "editExpenseModal": {
-    "editExpense": "Edit Expense",
-    "editing": "Editing",
-    "spendingDate": "Spending Date",
-    "spendingCategory": "Spending Category",
-    "title": "Title",
-    "currencyType": "Currency Type",
-    "amount": "Amount",
-    "cryptoPrice": "Crypto Price",
-    "cryptoAmount": "Crypto Amount",
-    "close": "Close",
-    "save": "Save",
-    "errorUpdatingSpendingEntry": "Error updating spending entry"
-=======
   "setting": {
     "exportData": "Export Data",
     "importData": "Import Data",
@@ -79,6 +59,5 @@
   "expenseHistory": {
     "totalExpense": "Total Expense",
     "totalBtcSpending": "Total BTC Spending"
->>>>>>> 1ba665d (Refactor locales)
   }
 }

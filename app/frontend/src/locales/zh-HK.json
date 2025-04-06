@@ -1,0 +1,63 @@
+{
+  "home": "主頁",
+  "charts": "圖表",
+  "settings": "設定",
+  "monthly_spending": "每月支出",
+  "date_click": "點擊日期",
+  "language": "語言",
+  "english": "英文",
+  "japanese": "日文",
+  "chinese_hk": "中文(香港)",
+  "months": {
+    "1": "一月",
+    "2": "二月",
+    "3": "三月",
+    "4": "四月",
+    "5": "五月",
+    "6": "六月",
+    "7": "七月",
+    "8": "八月",
+    "9": "九月",
+    "10": "十月",
+    "11": "十一月",
+    "12": "十二月"
+  },
+  "addSpendingButton": "新增",
+  "bitcoinPriceLabel": "比特幣價格",
+  "totalExpenseLabel": "總計：",
+  "noExpenseHistory": "所選月份沒有支出記錄。",
+  "amountColumn": "金額",
+  "btcAmountColumn": "比特幣金額",
+  "timestampColumn": "時間戳記",
+  "category": {
+    "food_drink": "餐飲",
+    "groceries": "雜貨",
+    "transport": "交通",
+    "shopping": "購物",
+    "entertainment": "娛樂",
+    "utilities": "公共事業",
+    "health_fitness": "健康與健身",
+    "home": "家居",
+    "spending": "無"
+  },
+  "totalExpense": "總支出",
+  "totalBtcSpending": "總比特幣支出",
+  "setting": {
+    "exportData": "匯出資料",
+    "importData": "匯入資料",
+    "language": "語言",
+    "currency": "貨幣"
+  },
+  "navBottom": {
+    "home": "主頁",
+    "charts": "圖表",
+    "settings": "設定"
+  },
+  "addSpending": {
+    "expenseAmountPlaceholder": "輸入金額"
+  },
+  "expenseHistory": {
+    "totalExpense": "總支出",
+    "totalBtcSpending": "總比特幣支出"
+  }
+}
