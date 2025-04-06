@@ -3,10 +3,10 @@
     <div class="flex items-center justify-between mb-4">
       <div class="flex flex-col pr-2">
         <p class="text-sm text-left leading-none text-gray-900 dark:text-white truncate">
-          {{ $t('totalExpense') }}: ${{ totalExpense }}
+          {{ $t('expenseHistory.totalExpense') }}: ${{ totalExpense }}
         </p>
         <p class="text-sm text-left leading-none text-gray-900 dark:text-white truncate">
-          {{ $t('totalBtcSpending') }}: {{ totalBtcSpending }}
+          {{ $t('expenseHistory.totalBtcSpending') }}: {{ totalBtcSpending }}
         </p>
       </div>
       <DatePicker

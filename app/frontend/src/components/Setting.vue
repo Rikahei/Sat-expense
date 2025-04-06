@@ -7,18 +7,18 @@
         @click="exportData"
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        {{ $t('exportData') }}
+        {{ $t('setting.exportData') }}
       </button>
       <button
         @click="$refs.fileInput.click()"
         class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
       >
-        {{ $t('importData') }}
+        {{ $t('setting.importData') }}
       </button>
       <input type="file" ref="fileInput" @change="importData" style="display: none" />
     </div>
     <div class="grid grid-cols-1 gap-4 mt-4">
-      <label for="languageSelect" class="mr-2 text-gray-700 dark:text-gray-300">{{ $t('language') }}:</label>
+      <label for="languageSelect" class="mr-2 text-gray-700 dark:text-gray-300">{{ $t('setting.language') }}:</label>
       <select
         id="languageSelect"
         v-model="$i18n.locale"
@@ -30,7 +30,7 @@
       </select>
     </div>
     <div class="grid grid-cols-1 gap-4 mt-4">
-      <label for="currencySelect" class="mr-2 text-gray-700 dark:text-gray-300">{{ $t('currency') }}:</label>
+      <label for="currencySelect" class="mr-2 text-gray-700 dark:text-gray-300">{{ $t('setting.currency') }}:</label>
       <select
         id="currencySelect"
         v-model="selectedCurrency"

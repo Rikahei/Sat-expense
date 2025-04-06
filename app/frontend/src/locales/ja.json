@@ -4,8 +4,6 @@
   "settings": "設定",
   "monthly_spending": "毎月の支出",
   "date_click": "日付をクリック",
-  "exportData": "データをエクスポート",
-  "importData": "データをインポート",
   "language": "言語",
   "english": "英語",
   "japanese": "日本語",
@@ -24,7 +22,6 @@
     "12": "十二月"
   },
   "addSpendingButton": "追加",
-  "expenseAmountPlaceholder": "金額入力",
   "bitcoinPriceLabel": "ビットコイン価格",
   "totalExpenseLabel": "合計",
   "noExpenseHistory": "選択した月の支出履歴はありません。",
@@ -44,6 +41,7 @@
   },
   "totalExpense": "合計支出",
   "totalBtcSpending": "合計BTC支出",
+<<<<<<< HEAD
   "error": {
     "errorLoadingHistory" : "Error loading history"
   },
@@ -63,5 +61,24 @@
     "close": "閉じる",
     "save": "保存",
     "errorUpdatingSpendingEntry": "支出項目の更新中にエラーが発生しました"
+=======
+  "setting": {
+    "exportData": "データをエクスポート",
+    "importData": "データをインポート",
+    "language": "言語",
+    "currency": "通貨"
+  },
+  "navBottom": {
+    "home": "ホーム",
+    "charts": "チャート",
+    "settings": "設定"
+  },
+  "addSpending": {
+    "expenseAmountPlaceholder": "金額入力"
+  },
+  "expenseHistory": {
+    "totalExpense": "合計支出",
+    "totalBtcSpending": "合計BTC支出"
+>>>>>>> 1ba665d (Refactor locales)
   }
 }

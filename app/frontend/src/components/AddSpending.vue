@@ -23,7 +23,7 @@
             <input
               type="number"
               class="flex-auto w-36 bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100"
-              :placeholder="$t('expenseAmountPlaceholder')"
+              :placeholder="$t('addSpending.expenseAmountPlaceholder')"
               v-model="spendingAmount"
             />
             <button

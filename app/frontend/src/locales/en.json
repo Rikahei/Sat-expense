@@ -4,8 +4,6 @@
   "settings": "Settings",
   "monthly_spending": "Monthly Spending",
   "date_click": "Date Click",
-  "exportData": "Export Data",
-  "importData": "Import Data",
   "language": "Language",
   "english": "English",
   "japanese": "日本語",
@@ -24,7 +22,6 @@
     "12": "December"
   },
   "addSpendingButton": "Add",
-  "expenseAmountPlaceholder": "Enter amount",
   "bitcoinPriceLabel": "Bitcoin Price",
   "totalExpenseLabel": "Total:",
   "noExpenseHistory": "No expense history for selected month.",
@@ -44,6 +41,7 @@
   },
   "totalExpense": "Total Expense",
   "totalBtcSpending": "Total BTC Spending",
+<<<<<<< HEAD
   "error": {
     "errorLoadingHistory" : "Error loading history"
   },
@@ -63,5 +61,24 @@
     "close": "Close",
     "save": "Save",
     "errorUpdatingSpendingEntry": "Error updating spending entry"
+=======
+  "setting": {
+    "exportData": "Export Data",
+    "importData": "Import Data",
+    "language": "Language",
+    "currency": "Currency"
+  },
+  "navBottom": {
+    "home": "Home",
+    "charts": "Charts",
+    "settings": "Settings"
+  },
+  "addSpending": {
+    "expenseAmountPlaceholder": "Enter amount"
+  },
+  "expenseHistory": {
+    "totalExpense": "Total Expense",
+    "totalBtcSpending": "Total BTC Spending"
+>>>>>>> 1ba665d (Refactor locales)
   }
 }
